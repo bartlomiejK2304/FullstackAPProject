@@ -1,11 +1,11 @@
-﻿using System.Security.Claims;
-using Projekt.Data;
-using Projekt.Models;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using FullstackAPPProject.Data;
+using FullstackAPPProject.Models;
+using System.Security.Claims;
 
-namespace Projekt.Controllers;
+namespace FullstackAPPProject.Controllers;
 
 public class KontoController : Controller
 {
