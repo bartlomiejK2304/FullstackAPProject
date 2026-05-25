@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Projekt.Controllers;
+namespace FullstackAPPProject.Controllers;
 
 public class KontoController : Controller
 {
