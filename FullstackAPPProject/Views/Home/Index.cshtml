@@ -2,7 +2,36 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h1>Witaj w serwisie Korki!</h1>
+<p>Tutaj znajdziesz korepetytorów albo dodasz własne ogłoszenie.</p>
+
+<p>
+    <a asp-controller="Ogloszenia" asp-action="Index" class="button">
+        Zobacz wszystkie ogłoszenia
+    </a>
+</p>
+
+<h2>Najnowsze ogłoszenia</h2>
+
+@if (Model.Count == 0)
+{
+    <p>Brak ogłoszeń.</p>
+}
+else
+{
+    <div class="lista">
+        @foreach (var o in Model)
+        {
+            <div class="karta">
+                <h3>
+                    <a asp-controller="Ogloszenia" asp-action="Szczegoly" asp-route-id="@o.Id">
+                        @o.Tytul
+                    </a>
+                </h3>
+                <p><strong>Kategoria:</strong> @o.Kategoria?.Nazwa</p>
+                <p><strong>Miasto:</strong> @o.Miasto</p>
+                <p><strong>Cena:</strong> @o.Cena zł / godzinę</p>
+            </div>
+        }
+    </div>
+}

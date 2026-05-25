@@ -15,7 +15,29 @@ namespace FullstackAPPProject.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            
+            var testoweOgloszenia = new List<Ogloszenie>
+        {
+
+        new Ogloszenie {
+                Id = 1,
+                Tytul = "Korepetycje z Matematyki",
+                Miasto = "Warszawa",
+                Cena = 60,
+                Kategoria = new Kategoria { Nazwa = "Matematyka" } 
+            },
+
+            new Ogloszenie {
+                Id = 2,
+                Tytul = "Angielski dla początkujących",
+                Miasto = "Kraków",
+                Cena = 50,
+                Kategoria = new Kategoria { Nazwa = "Języki obce" }
+            }
+        };
+
+            
+            return View(testoweOgloszenia);
         }
 
         public IActionResult Privacy()
