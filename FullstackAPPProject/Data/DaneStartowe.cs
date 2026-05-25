@@ -6,10 +6,8 @@ namespace FullstackAPPProject.Data
     {
         public static void Wypelnij(AppDbContext db)
         {
-            // Jeśli są już kategorie, nic nie rób
             if (db.Kategorie.Any()) return;
 
-            // Dodaj kategorie
             var matematyka = new Kategoria { Nazwa = "Matematyka" };
             var fizyka = new Kategoria { Nazwa = "Fizyka" };
             var angielski = new Kategoria { Nazwa = "Język angielski" };
@@ -20,13 +18,11 @@ namespace FullstackAPPProject.Data
             db.Kategorie.AddRange(matematyka, fizyka, angielski, polski, informatyka, chemia);
             db.SaveChanges();
 
-            // Dodaj przykładowych użytkowników (hasło: "haslo")
             var anna = new Uzytkownik { Nazwa = "anna", Haslo = ZahashujHaslo("haslo") };
             var piotr = new Uzytkownik { Nazwa = "piotr", Haslo = ZahashujHaslo("haslo") };
             db.Uzytkownicy.AddRange(anna, piotr);
             db.SaveChanges();
 
-            // Dodaj przykładowe ogłoszenia
             db.Ogloszenia.AddRange(
                 new Ogloszenie
                 {
@@ -76,7 +72,6 @@ namespace FullstackAPPProject.Data
             db.SaveChanges();
         }
 
-        // Prosty hash hasła (SHA256)
         public static string ZahashujHaslo(string haslo)
         {
             var bajty = System.Text.Encoding.UTF8.GetBytes(haslo);
