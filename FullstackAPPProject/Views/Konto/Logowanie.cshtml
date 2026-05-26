@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "Logowanie";
+}
+
+<h1>Logowanie</h1>
+
+@if (ViewBag.Blad != null)
+{
+    <div class="blad">@ViewBag.Blad</div>
+}
+
+<form method="post" asp-action="Logowanie">
+    <div class="pole">
+        <label>Nazwa użytkownika</label>
+        <input type="text" name="nazwa" />
+    </div>
+
+    <div class="pole">
+        <label>Hasło</label>
+        <input type="password" name="haslo" />
+    </div>
+
+    <button type="submit" class="button">Zaloguj</button>
+</form>
+
+<p>Nie masz konta? <a asp-action="Rejestracja">Zarejestruj się</a></p>
