@@ -1,0 +1,40 @@
+@model Ogloszenie
+@{
+    ViewData["Title"] = Model.Tytul;
+    var idZalogowanego = User.Identity!.IsAuthenticated
+        ? int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value)
+        : 0;
+    bool czyMoje = idZalogowanego == Model.UzytkownikId;
+}
+
+<h1>@Model.Tytul</h1>
+
+<div class="karta">
+    <p><strong>Kategoria:</strong> @Model.Kategoria?.Nazwa</p>
+    <p><strong>Miasto:</strong> @Model.Miasto</p>
+    <p><strong>Forma zajêæ:</strong> @Model.Forma</p>
+    <p><strong>Cena:</strong> @Model.Cena z³ / godzinê</p>
+    <p><strong>Autor:</strong> @Model.Uzytkownik?.Nazwa</p>
+    <p><strong>Data dodania:</strong> @Model.DataDodania.ToString("dd.MM.yyyy HH:mm")</p>
+
+    <h3>Opis</h3>
+    <p>@Model.Opis</p>
+</div>
+
+@* Jeœli to moje og³oszenie - poka¿ przyciski edycji/usuwania *@
+@if (czyMoje)
+{
+<div class="przyciski">
+    <a asp-action="Edytuj" asp-route-id="@Model.Id" class="button">Edytuj</a>
+
+    <form asp-action="Usun" method="post" style="display:inline;">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <button type="submit" class="button-czerwony"
+                onclick="return confirm('Na pewno usun¹æ?');">
+            Usuñ
+        </button>
+    </form>
+</div>
+}
+
+<p><a asp-action="Index">&larr; Wróæ do listy</a></p>

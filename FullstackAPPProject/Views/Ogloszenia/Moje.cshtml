@@ -1,0 +1,42 @@
+@model List<Ogloszenie>
+    @{
+    ViewData["Title"] = "Moje og³oszenia";
+    }
+
+    <h1>Moje og³oszenia</h1>
+
+    <p><a asp-action="Dodaj" class="button">+ Dodaj nowe</a></p>
+
+    @if (Model.Count == 0)
+{
+    <p>Nie masz jeszcze ¿adnych og³oszeñ.</p>
+}
+else
+{
+    <div class="lista">
+        @foreach (var o in Model)
+        {
+        <div class="karta">
+            <h3>
+                <a asp-action="Szczegoly" asp-route-id="@o.Id">@o.Tytul</a>
+            </h3>
+            <p><strong>Kategoria:</strong> @o.Kategoria?.Nazwa</p>
+            <p><strong>Miasto:</strong> @o.Miasto</p>
+            <p><strong>Cena:</strong> @o.Cena z³ / godzinê</p>
+            <p class="data">Dodano: @o.DataDodania.ToString("dd.MM.yyyy")</p>
+
+            <div class="przyciski">
+                <a asp-action="Edytuj" asp-route-id="@o.Id" class="button">Edytuj</a>
+
+                <form asp-action="Usun" method="post" style="display:inline;">
+                    <input type="hidden" name="id" value="@o.Id" />
+                    <button type="submit" class="button-czerwony"
+                            onclick="return confirm('Na pewno usun¹æ?');">
+                        Usuñ
+                    </button>
+                </form>
+            </div>
+        </div>
+        }
+    </div>
+}
