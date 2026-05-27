@@ -1,0 +1,65 @@
+@model List<Ogloszenie>
+    @{
+    ViewData["Title"] = "Og³oszenia";
+    var kategorie = ViewBag.Kategorie as List<Kategoria>;
+    var szukaj = ViewBag.Szukaj as string;
+    var wybrana = ViewBag.WybranaKategoria as int?;
+    }
+
+    <h1>Wszystkie og³oszenia</h1>
+
+    @* Formularz wyszukiwania *@
+    <form method="get" class="filtry">
+        <div class="pole">
+            <label>Szukaj w tytule</label>
+            <input type="text" name="szukaj" value="@szukaj" />
+        </div>
+
+        <div class="pole">
+            <label>Kategoria</label>
+            <select name="kategoriaId">
+                <option value="">-- wszystkie --</option>
+                @if (kategorie != null)
+            {
+                foreach (var k in kategorie)
+                {
+                    if (wybrana == k.Id)
+                    {
+                <option value="@k.Id" selected>@k.Nazwa</option>
+                    }
+                    else
+                    {
+                <option value="@k.Id">@k.Nazwa</option>
+                    }
+                }
+            }
+            </select>
+        </div>
+
+        <button type="submit" class="button">Szukaj</button>
+        <a asp-action="Index" class="button-szary">Wyczyœæ</a>
+    </form>
+
+    @* Lista wyników *@
+    @if (Model.Count == 0)
+{
+    <p>Brak og³oszeñ pasuj¹cych do wyszukiwania.</p>
+}
+else
+{
+    <p>Znaleziono: @Model.Count</p>
+    <div class="lista">
+        @foreach (var o in Model)
+        {
+        <div class="karta">
+            <h3>
+                <a asp-action="Szczegoly" asp-route-id="@o.Id">@o.Tytul</a>
+            </h3>
+            <p><strong>Kategoria:</strong> @o.Kategoria?.Nazwa</p>
+            <p><strong>Miasto:</strong> @o.Miasto (@o.Forma)</p>
+            <p><strong>Cena:</strong> @o.Cena z³ / godzinê</p>
+            <p class="data">Dodano: @o.DataDodania.ToString("dd.MM.yyyy")</p>
+        </div>
+        }
+    </div>
+}
