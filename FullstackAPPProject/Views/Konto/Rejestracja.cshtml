@@ -1,0 +1,29 @@
+@model Uzytkownik
+@{
+    ViewData["Title"] = "Rejestracja";
+}
+
+<h1>Rejestracja</h1>
+
+@if (ViewBag.Blad != null)
+{
+<div class="blad">@ViewBag.Blad</div>
+}
+
+<form method="post" asp-action="Rejestracja">
+    <div class="pole">
+        <label asp-for="Nazwa"></label>
+        <input asp-for="Nazwa" />
+        <span asp-validation-for="Nazwa" class="blad"></span>
+    </div>
+
+    <div class="pole">
+        <label asp-for="Haslo"></label>
+        <input asp-for="Haslo" type="password" />
+        <span asp-validation-for="Haslo" class="blad"></span>
+    </div>
+
+    <button type="submit" class="button">Zarejestruj</button>
+</form>
+
+<p>Masz ju¿ konto? <a asp-action="Logowanie">Zaloguj siê</a></p>

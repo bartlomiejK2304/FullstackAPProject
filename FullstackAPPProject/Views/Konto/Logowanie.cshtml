@@ -6,21 +6,21 @@
 
 @if (ViewBag.Blad != null)
 {
-    <div class="blad">@ViewBag.Blad</div>
+<div class="blad">@ViewBag.Blad</div>
 }
 
 <form method="post" asp-action="Logowanie">
     <div class="pole">
-        <label>Nazwa użytkownika</label>
+        <label>Nazwa u�ytkownika</label>
         <input type="text" name="nazwa" />
     </div>
 
     <div class="pole">
-        <label>Hasło</label>
+        <label>Has�o</label>
         <input type="password" name="haslo" />
     </div>
 
     <button type="submit" class="button">Zaloguj</button>
 </form>
 
-<p>Nie masz konta? <a asp-action="Rejestracja">Zarejestruj się</a></p>
+<p>Nie masz konta? <a asp-action="Rejestracja">Zarejestruj si�</a></p>

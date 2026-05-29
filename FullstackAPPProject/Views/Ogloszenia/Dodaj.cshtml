@@ -1,0 +1,51 @@
+@model Ogloszenie
+@{
+    ViewData["Title"] = "Dodaj og³oszenie";
+}
+
+<h1>Dodaj nowe og³oszenie</h1>
+
+<form method="post" asp-action="Dodaj">
+    <div class="pole">
+        <label asp-for="Tytul"></label>
+        <input asp-for="Tytul" />
+        <span asp-validation-for="Tytul" class="blad"></span>
+    </div>
+
+    <div class="pole">
+        <label asp-for="Opis"></label>
+        <textarea asp-for="Opis" rows="5"></textarea>
+        <span asp-validation-for="Opis" class="blad"></span>
+    </div>
+
+    <div class="pole">
+        <label asp-for="KategoriaId"></label>
+        <select asp-for="KategoriaId" asp-items="ViewBag.Kategorie">
+            <option value="">-- wybierz --</option>
+        </select>
+        <span asp-validation-for="KategoriaId" class="blad"></span>
+    </div>
+
+    <div class="pole">
+        <label asp-for="Cena"></label>
+        <input asp-for="Cena" type="number" step="0.01" />
+        <span asp-validation-for="Cena" class="blad"></span>
+    </div>
+
+    <div class="pole">
+        <label asp-for="Miasto"></label>
+        <input asp-for="Miasto" />
+        <span asp-validation-for="Miasto" class="blad"></span>
+    </div>
+
+    <div class="pole">
+        <label asp-for="Forma"></label>
+        <select asp-for="Forma">
+            <option value="Online">Online</option>
+            <option value="Stacjonarnie">Stacjonarnie</option>
+        </select>
+    </div>
+
+    <button type="submit" class="button">Zapisz</button>
+    <a asp-action="Index" class="button-szary">Anuluj</a>
+</form>
