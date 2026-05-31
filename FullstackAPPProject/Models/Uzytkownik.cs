@@ -18,6 +18,19 @@ public class Uzytkownik
     [Display(Name = "Hasło")]
     public string Haslo { get; set; } = "";
 
-    
+    //User
+    [Required(ErrorMessage = "Wybierz rolę")]
+    [Display(Name = "Rola")]
+    public string Rola { get; set; } = "Uczen";
+
+    // Opis
+    [StringLength(500, ErrorMessage = "Opis max 500 znaków")]
+    [Display(Name = "O mnie")]
+    public string? Opis { get; set; }
+
+    // Zdjęcie
+    [Display(Name = "Zdjęcie profilowe")]
+    public string? ZdjecieProfilPath { get; set; }
+
     public List<Ogloszenie> Ogloszenia { get; set; } = new();
 }
