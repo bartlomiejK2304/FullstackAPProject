@@ -123,6 +123,19 @@ form .field {
     margin-bottom: 12px;
 }
 
+form .pole {
+    margin-bottom: 12px;
+}
+
+.blad {
+    color: #c53030;
+    background-color: #fed7d7;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #c53030;
+    font-size: 14px;
+}
+
 form label {
     display: block;
     font-weight: bold;
@@ -156,6 +169,7 @@ form textarea {
     cursor: pointer;
     font-size: 14px;
     font-family: Arial, sans-serif;
+    margin-top: 10px;
 }
 
     .button:hover,
@@ -229,3 +243,12 @@ span.error {
     padding: 0;
     display: inline;
 }
+
+span.blad {
+    background: none;
+    border: none;
+    padding: 0;
+    display: inline;
+}
+
+
