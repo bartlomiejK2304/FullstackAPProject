@@ -23,8 +23,6 @@ public class Uzytkownik
     [Display(Name = "Rola")]
     public string Rola { get; set; } = "Uczen";
 
-    // Opis
-    [StringLength(500, ErrorMessage = "Opis max 500 znaków")]
     [Display(Name = "O mnie")]
     public string? Opis { get; set; }
 
