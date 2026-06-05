@@ -3,27 +3,52 @@
     ViewData["Title"] = "Rejestracja";
 }
 
-<h1>Rejestracja</h1>
+<div class="auth-karta">
+    <h1><i class="bi bi-person-plus"></i> Rejestracja</h1>
+    <p class="auth-podtytul">Za³ó¿ konto ¿eby zacz¹æ</p>
 
-@if (ViewBag.Blad != null)
-{
-<div class="blad">@ViewBag.Blad</div>
-}
+    @if (ViewBag.Blad != null)
+    {
+        <div class="blad"><i class="bi bi-exclamation-triangle"></i> @ViewBag.Blad</div>
+    }
 
-<form method="post" asp-action="Rejestracja">
-    <div class="pole">
-        <label asp-for="Nazwa"></label>
-        <input asp-for="Nazwa" />
-        <span asp-validation-for="Nazwa" class="blad"></span>
-    </div>
+    <form method="post" asp-action="Rejestracja">
+        <div class="pole">
+            <label asp-for="Nazwa"><i class="bi bi-person"></i> Nazwa u¿ytkownika</label>
+            <input asp-for="Nazwa" placeholder="np. jan" />
+            <span asp-validation-for="Nazwa" class="blad"></span>
+        </div>
 
-    <div class="pole">
-        <label asp-for="Haslo"></label>
-        <input asp-for="Haslo" type="password" />
-        <span asp-validation-for="Haslo" class="blad"></span>
-    </div>
+        <div class="pole">
+            <label asp-for="Haslo"><i class="bi bi-lock"></i> Has³o</label>
+            <input asp-for="Haslo" type="password" placeholder="min. 4 znaki" />
+            <span asp-validation-for="Haslo" class="blad"></span>
+        </div>
+        <div class="pole">
+            <label>Kim jesteœ?</label>
+            <div class="wybor-roli">
+                <label>
+                    <input type="radio" name="Rola" value="Uczen" checked />
+                    <i class="bi bi-backpack"></i>
+                    <span>Uczeñ</span>
+                </label>
+                <label>
+                    <input type="radio" name="Rola" value="Korepetytor" />
+                    <i class="bi bi-mortarboard"></i>
+                    <span>Korepetytor</span>
+                </label>
+            </div>
+            <small style="color: var(--kolor-tekst-szary); font-size: 13px;">
+                Tylko korepetytorzy mog¹ dodawaæ og³oszenia.
+            </small>
+        </div>
 
-    <button type="submit" class="button">Zarejestruj</button>
-</form>
+        <button type="submit" class="button" style="width: 100%; justify-content: center;">
+            <i class="bi bi-check-circle"></i> Zarejestruj
+        </button>
+    </form>
 
-<p>Masz ju¿ konto? <a asp-action="Logowanie">Zaloguj siê</a></p>
+    <p class="auth-stopka">
+        Masz ju¿ konto? <a asp-action="Logowanie">Zaloguj siê</a>
+    </p>
+</div>

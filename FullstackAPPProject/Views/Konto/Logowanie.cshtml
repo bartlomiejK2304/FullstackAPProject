@@ -2,25 +2,32 @@
     ViewData["Title"] = "Logowanie";
 }
 
-<h1>Logowanie</h1>
+<div class="auth-karta">
+    <h1><i class="bi bi-box-arrow-in-right"></i> Logowanie</h1>
+    <p class="auth-podtytul">Zaloguj się żeby zarządzać ogłoszeniami</p>
 
-@if (ViewBag.Blad != null)
-{
-    <div class="blad">@ViewBag.Blad</div>
-}
+    @if (ViewBag.Blad != null)
+    {
+        <div class="blad"><i class="bi bi-exclamation-triangle"></i> @ViewBag.Blad</div>
+    }
 
-<form method="post" asp-action="Logowanie">
-    <div class="pole">
-        <label>Nazwa użytkownika</label>
-        <input type="text" name="nazwa" />
-    </div>
+    <form method="post" asp-action="Logowanie">
+        <div class="pole">
+            <label><i class="bi bi-person"></i> Nazwa użytkownika</label>
+            <input type="text" name="nazwa" placeholder="np. anna" />
+        </div>
 
-    <div class="pole">
-        <label>Hasło</label>
-        <input type="password" name="haslo" />
-    </div>
+        <div class="pole">
+            <label><i class="bi bi-lock"></i> Hasło</label>
+            <input type="password" name="haslo" placeholder="Twoje hasło" />
+        </div>
 
-    <button type="submit" class="button">Zaloguj</button>
-</form>
+        <button type="submit" class="button" style="width: 100%; justify-content: center;">
+            <i class="bi bi-box-arrow-in-right"></i> Zaloguj
+        </button>
+    </form>
 
-<p>Nie masz konta? <a asp-action="Rejestracja">Zarejestruj się</a></p>
+    <p class="auth-stopka">
+        Nie masz konta? <a asp-action="Rejestracja">Zarejestruj się</a>
+    </p>
+</div>
