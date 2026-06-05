@@ -26,13 +26,17 @@ public class Ogloszenie
     [Display(Name = "Miasto")]
     public string Miasto { get; set; } = "";
 
-    
+
     [Required]
     [Display(Name = "Forma zajęć")]
     public string Forma { get; set; } = "Online";
-   
+
     public DateTime DataDodania { get; set; } = DateTime.Now;
-   
+
+    // Adres zjecia
+    [Display(Name = "Zdjęcie")]
+    public string? ZdjeciePath { get; set; }
+
     [Required(ErrorMessage = "Wybierz kategorię")]
     [Display(Name = "Kategoria")]
     public int KategoriaId { get; set; }
