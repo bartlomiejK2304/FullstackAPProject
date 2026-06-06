@@ -1,0 +1,225 @@
+@model Uzytkownik
+@{
+    ViewData["Title"] = "Profil " + Model.Nazwa;
+    var opinie = ViewBag.Opinie as List<Opinia> ?? new List<Opinia>();
+    double sredniaOcena = ViewBag.SredniaOcena ?? 0.0;
+    int liczbaOpinii = ViewBag.LiczbaOpinii ?? 0;
+    bool juzOcenil = ViewBag.JuzOcenil ?? false;
+
+    int mojeId = 0;
+    bool jestemZalogowany = User.Identity!.IsAuthenticated;
+    if (jestemZalogowany)
+    {
+        mojeId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
+    }
+    bool toMojProfil = mojeId == Model.Id;
+    bool jestemUczniem = User.IsInRole("Uczen");
+
+    var ikonyKategorii = new Dictionary<string, string>
+    {
+        { "Matematyka", "bi-calculator" },
+        { "Fizyka", "bi-lightning-charge" },
+        { "Jêzyk angielski", "bi-translate" },
+        { "Jêzyk polski", "bi-book" },
+        { "Informatyka", "bi-laptop" },
+        { "Chemia", "bi-droplet-half" }
+    };
+}
+
+<div class="profil-karta">
+    <div class="profil-avatar-duzy">
+        @{
+            var vdProfilAvatar = new ViewDataDictionary(ViewData) { { "Rozmiar", "duzy" } };
+        }
+        @await Html.PartialAsync("_Avatar", Model, vdProfilAvatar)
+    </div>
+
+    <div class="profil-info">
+        <h1 style="margin-top: 0;">@Model.Nazwa</h1>
+        <p class="profil-rola">
+            @if (Model.Rola == "Korepetytor")
+            {
+                <span class="badge-rola"><i class="bi bi-mortarboard"></i> Korepetytor</span>
+            }
+            else
+            {
+                <span class="badge-rola"><i class="bi bi-backpack"></i> Uczeñ</span>
+            }
+        </p>
+
+        @if (Model.Rola == "Korepetytor")
+        {
+            <div style="margin: 12px 0;">
+                @{
+                    var vdProfilGwiazdki = new ViewDataDictionary(ViewData)
+                    {
+                        { "Srednia", sredniaOcena },
+                        { "Ilosc", liczbaOpinii }
+                    };
+                }
+                @await Html.PartialAsync("_Gwiazdki", vdProfilGwiazdki)
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(Model.Opis))
+        {
+            <p style="white-space: pre-wrap; margin-top: 16px;">@Model.Opis</p>
+        }
+        else if (toMojProfil)
+        {
+            <p style="color: var(--kolor-tekst-szary); font-style: italic;">
+                Nie masz jeszcze opisu. <a asp-action="EdytujProfil">Dodaj opis</a>, ¿eby uczniowie wiedzieli kim jesteœ.
+            </p>
+        }
+
+        @if (toMojProfil)
+        {
+            <div class="przyciski" style="margin-top: 16px;">
+                <a asp-action="EdytujProfil" class="button">
+                    <i class="bi bi-pencil"></i> Edytuj profil
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+@if (Model.Rola == "Korepetytor" && Model.Ogloszenia.Any())
+{
+    <h2><i class="bi bi-collection"></i> Og³oszenia @Model.Nazwa (@Model.Ogloszenia.Count)</h2>
+    <div class="lista">
+        @foreach (var o in Model.Ogloszenia.OrderByDescending(x => x.DataDodania))
+        {
+            var ikona = ikonyKategorii.ContainsKey(o.Kategoria?.Nazwa ?? "")
+                ? ikonyKategorii[o.Kategoria!.Nazwa]
+                : "bi-book";
+
+            <div class="karta">
+                @if (!string.IsNullOrEmpty(o.ZdjeciePath))
+                {
+                    <img src="@o.ZdjeciePath" alt="@o.Tytul" class="karta-zdjecie" />
+                }
+                else
+                {
+                    <div class="karta-zdjecie-placeholder">
+                        <i class="bi @ikona"></i>
+                    </div>
+                }
+                <div class="karta-tresc">
+                    <span class="karta-kategoria-tag">@o.Kategoria?.Nazwa</span>
+                    <h3>
+                        <a asp-controller="Ogloszenia" asp-action="Szczegoly" asp-route-id="@o.Id">@o.Tytul</a>
+                    </h3>
+                    <div class="karta-info"><i class="bi bi-geo-alt"></i> @o.Miasto</div>
+                    <div class="karta-info"><i class="bi bi-laptop"></i> @o.Forma</div>
+                    <div class="karta-cena">@o.Cena z³ / godz.</div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@if (Model.Rola == "Korepetytor")
+{
+    <h2 style="margin-top: 40px;"><i class="bi bi-chat-square-quote"></i> Opinie (@liczbaOpinii)</h2>
+
+   
+    @if (jestemZalogowany && !toMojProfil && jestemUczniem && !juzOcenil)
+    {
+        <div class="opinia-formularz">
+            <h3 style="margin-top: 0;">Dodaj swoj¹ opiniê</h3>
+
+            @if (TempData["BladOpinia"] != null)
+            {
+                <div class="blad"><i class="bi bi-exclamation-triangle"></i> @TempData["BladOpinia"]</div>
+            }
+
+            <form method="post" asp-controller="Opinie" asp-action="Dodaj">
+                <input type="hidden" name="korepetytorId" value="@Model.Id" />
+
+                <div class="pole">
+                    <label>Twoja ocena</label>
+                   
+                    <div class="ocena-radio">
+                        @for (int i = 5; i >= 1; i--)
+                        {
+                            var idOcena = "ocena_" + i;
+                            if (i == 5)
+                            {
+                                <input type="radio" name="ocena" value="@i" id="@idOcena" checked />
+                            }
+                            else
+                            {
+                                <input type="radio" name="ocena" value="@i" id="@idOcena" />
+                            }
+                            <label for="@idOcena" title="@i / 5">
+                                <i class="bi bi-star-fill"></i>
+                            </label>
+                        }
+                    </div>
+                </div>
+
+                <div class="pole">
+                    <label>Treœæ opinii</label>
+                    <textarea name="tresc" rows="3" maxlength="500" required
+                              placeholder="Jak oceniasz korepetycje? Co warto powiedzieæ innym uczniom?"></textarea>
+                </div>
+
+                <button type="submit" class="button">
+                    <i class="bi bi-send"></i> Dodaj opiniê
+                </button>
+            </form>
+        </div>
+    }
+    else if (jestemZalogowany && juzOcenil && !toMojProfil)
+    {
+        <div class="info-pasek">
+            <i class="bi bi-check-circle"></i> Ju¿ doda³eœ opiniê o tym korepetytorze.
+        </div>
+    }
+    else if (!jestemZalogowany)
+    {
+        <div class="info-pasek">
+            <i class="bi bi-info-circle"></i>
+            <span><a asp-action="Logowanie">Zaloguj siê</a>, ¿eby dodaæ opiniê.</span>
+        </div>
+    }
+
+    
+    @if (!opinie.Any())
+    {
+        <p style="color: var(--kolor-tekst-szary);">Brak opinii. B¹dŸ pierwszy!</p>
+    }
+    else
+    {
+        <div class="opinie-lista">
+            @foreach (var op in opinie)
+            {
+                <div class="opinia">
+                    <div class="opinia-naglowek">
+                        <div class="opinia-autor">
+                            @{
+                                var vdOpiniaAvatar = new ViewDataDictionary(ViewData) { { "Rozmiar", "maly" } };
+                            }
+                            @await Html.PartialAsync("_Avatar", op.Autor, vdOpiniaAvatar)
+                            <strong>@op.Autor?.Nazwa</strong>
+                        </div>
+                        <div class="opinia-ocena">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                if (i <= op.Ocena)
+                                {
+                                    <i class="bi bi-star-fill"></i>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-star"></i>
+                                }
+                            }
+                        </div>
+                    </div>
+                    <p class="opinia-tresc">@op.Tresc</p>
+                    <div class="opinia-data">@op.DataDodania.ToString("dd.MM.yyyy")</div>
+                </div>
+            }
+        </div>
+    }
+}
