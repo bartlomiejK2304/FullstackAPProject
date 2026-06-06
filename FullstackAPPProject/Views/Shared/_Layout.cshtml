@@ -1,12 +1,26 @@
-﻿<!DOCTYPE html>
+﻿@inject FullstackAPPProject.Data.AppDbContext Db
+<!DOCTYPE html>
 <html lang="pl">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@ViewData["Title"] - KorkiPL</title>
-    <link rel="stylesheet" href="~/css/style.css" />
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
 </head>
 <body>
+    @* Liczymy nieprzeczytane wiadomości dla zalogowanego usera - prosto, bezpośrednio z DbContext *@
+    @{
+    int nieprzeczytaneWiadomosci = 0;
+    if (User.Identity!.IsAuthenticated)
+    {
+        var idText = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (int.TryParse(idText, out int mojeId))
+        {
+            nieprzeczytaneWiadomosci = Db.Wiadomosci.Count(w => w.OdbiorcaId == mojeId && !w.Przeczytana);
+        }
+    }
+    }
+
     <header>
         <nav>
             <a class="logo" asp-controller="Home" asp-action="Index">KorkiPL</a>

@@ -829,4 +829,683 @@ span.error {
     gap: 8px;
 }
 
+/*Responsywnosc */
+/*większy ekran*/
+@media (max-width: 900px) {
+    main {
+        padding: 24px 16px;
+    }
+
+    .hero {
+        padding: 60px 20px;
+    }
+
+        .hero h1 {
+            font-size: 36px;
+        }
+
+        .hero p {
+            font-size: 17px;
+        }
+
+    .filtry,
+    .filters {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .szczegoly-tresc {
+        padding: 24px;
+    }
+
+    .formularz-karta {
+        padding: 24px;
+    }
+}
+
+/* Telefon */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 26px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    header nav {
+        padding: 12px 16px;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .logo {
+        margin-right: 0;
+        justify-content: center;
+    }
+
+    header ul {
+        justify-content: center;
+        gap: 4px;
+    }
+
+    header a:not(.logo) {
+        padding: 6px 10px;
+        font-size: 14px;
+    }
+
+    .user-info {
+        text-align: center;
+        width: 100%;
+        padding: 4px;
+    }
+
+    .hero {
+        padding: 48px 16px;
+        margin-bottom: 32px;
+    }
+
+        .hero h1 {
+            font-size: 28px;
+        }
+
+        .hero p {
+            font-size: 15px;
+        }
+
+    .hero-przyciski {
+        flex-direction: column;
+    }
+
+        .hero-przyciski .button {
+            width: 100%;
+            justify-content: center;
+        }
+
+    .statystyki {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .kategorie-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .lista {
+        grid-template-columns: 1fr;
+    }
+
+    .filtry,
+    .filters {
+        grid-template-columns: 1fr;
+    }
+
+    .szczegoly-tresc {
+        padding: 20px;
+    }
+
+    .szczegoly-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .formularz-karta,
+    .auth-karta {
+        padding: 20px;
+        margin: 16px auto;
+    }
+
+    .panel-header {
+        padding: 24px;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .wybor-roli {
+        grid-template-columns: 1fr;
+    }
+
+    .przyciski,
+    .buttons {
+        flex-direction: column;
+    }
+
+        .przyciski .button,
+        .przyciski .button-czerwony,
+        .przyciski .button-szary,
+        .buttons .button,
+        .buttons .button-red,
+        .buttons .button-gray {
+            width: 100%;
+            justify-content: center;
+        }
+}
+
+
+/*skrzynka i chat do wiadomosci */
+
+/* lista konwersacji */
+.konwersacje-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.konwersacja-item {
+    background: var(--kolor-tlo-karta);
+    border: 1px solid var(--kolor-obramowanie);
+    border-radius: var(--zaokraglenie);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-decoration: none;
+    color: var(--kolor-tekst);
+    transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+
+    .konwersacja-item:hover {
+        transform: translateX(2px);
+        box-shadow: var(--cien-srednia);
+        border-color: var(--kolor-glowny);
+        text-decoration: none;
+        color: var(--kolor-tekst);
+    }
+
+.konwersacja-ikona {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: var(--kolor-glowny);
+}
+
+.konwersacja-tresc {
+    flex: 1;
+    min-width: 0; 
+}
+
+.konwersacja-naglowek {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+    gap: 8px;
+}
+
+    .konwersacja-naglowek strong {
+        font-size: 16px;
+    }
+
+.konwersacja-ogloszenie {
+    color: var(--kolor-glowny);
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.konwersacja-podglad {
+    color: var(--kolor-tekst-szary);
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.konwersacja-licznik {
+    flex-shrink: 0;
+    background: var(--kolor-akcent);
+    color: white;
+    min-width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 0 8px;
+}
+
+
+/* Nagłówek konwersacji */
+.konwersacja-header {
+    background: var(--kolor-tlo-karta);
+    border: 1px solid var(--kolor-obramowanie);
+    border-radius: var(--zaokraglenie);
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+
+/* lista wiadomości */
+.czat {
+    background: var(--kolor-tlo-karta);
+    border: 1px solid var(--kolor-obramowanie);
+    border-radius: var(--zaokraglenie);
+    padding: 24px;
+    min-height: 300px;
+    max-height: 500px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.wiadomosc {
+    max-width: 70%;
+    display: flex;
+    flex-direction: column;
+}
+
+.wiadomosc-moja {
+    align-self: flex-end;
+    align-items: flex-end;
+}
+
+.wiadomosc-inny {
+    align-self: flex-start;
+    align-items: flex-start;
+}
+
+.wiadomosc-banka {
+    padding: 10px 16px;
+    border-radius: 18px;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+.wiadomosc-moja .wiadomosc-banka {
+    background: var(--kolor-glowny);
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+
+.wiadomosc-inny .wiadomosc-banka {
+    background: var(--kolor-tlo);
+    color: var(--kolor-tekst);
+    border: 1px solid var(--kolor-obramowanie);
+    border-bottom-left-radius: 4px;
+}
+
+.wiadomosc-data {
+    font-size: 11px;
+    color: var(--kolor-tekst-szary);
+    margin-top: 4px;
+    padding: 0 8px;
+}
+
+
+/* formularz odpowiedzi */
+.czat-formularz {
+    background: var(--kolor-tlo-karta);
+    border: 1px solid var(--kolor-obramowanie);
+    border-radius: var(--zaokraglenie);
+    padding: 16px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+}
+
+    .czat-formularz textarea {
+        flex: 1;
+        margin: 0;
+        resize: vertical;
+        min-height: 60px;
+        width: auto;
+    }
+
+    .czat-formularz button {
+        flex-shrink: 0;
+        height: 44px;
+    }
+
+
+.kontakt-formularz {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--kolor-obramowanie);
+}
+
+
+/* licznik w nawigacji */
+.nav-licznik {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--kolor-akcent);
+    color: white;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 0 6px;
+    margin-left: 4px;
+}
+
+
+/* responsywnosc dla wiadomosci */
+@media (max-width: 600px) {
+    .konwersacja-item {
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .konwersacja-ikona {
+        width: 44px;
+        height: 44px;
+        font-size: 20px;
+    }
+
+    .konwersacja-naglowek {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+    }
+
+    .wiadomosc {
+        max-width: 85%;
+    }
+
+    .czat {
+        padding: 16px;
+        max-height: 400px;
+    }
+
+    .czat-formularz {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+        .czat-formularz button {
+            width: 100%;
+            justify-content: center;
+        }
+}
+
+
+/* profil, avatary, gwiazdki, opinie */
+
+/* avatar */
+.avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    object-fit: cover;
+    background: linear-gradient(135deg, var(--kolor-glowny), #7c3aed);
+    color: white;
+    font-weight: 700;
+    text-transform: uppercase;
+    overflow: hidden;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+.avatar-maly {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+}
+
+.avatar-sredni {
+    width: 56px;
+    height: 56px;
+    font-size: 22px;
+}
+
+.avatar-duzy {
+    width: 120px;
+    height: 120px;
+    font-size: 48px;
+}
+
+.avatar-inicjal {
+    
+}
+
+
+/* karta profilu */
+.profil-karta {
+    background: var(--kolor-tlo-karta);
+    border: 1px solid var(--kolor-obramowanie);
+    border-radius: var(--zaokraglenie);
+    padding: 32px;
+    margin-bottom: 32px;
+    display: flex;
+    gap: 32px;
+    align-items: flex-start;
+    box-shadow: var(--cien-mala);
+}
+
+.profil-avatar-duzy {
+    flex-shrink: 0;
+}
+
+.profil-info {
+    flex: 1;
+    min-width: 0;
+}
+
+    .profil-info h1 {
+        margin: 0 0 8px 0;
+        border: none;
+    }
+
+.profil-rola {
+    margin: 0 0 8px 0;
+}
+
+    .profil-rola .badge-rola {
+        background: linear-gradient(135deg, var(--kolor-glowny), #7c3aed);
+        padding: 4px 12px;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+        margin: 0;
+    }
+
+
+/* gwiazdki */
+.gwiazdki {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    color: var(--kolor-akcent);
+    font-size: 18px;
+}
+
+    .gwiazdki .bi-star,
+    .gwiazdki-brak {
+        color: #d4d4d8;
+    }
+
+.gwiazdki-brak {
+    font-size: 14px;
+    color: var(--kolor-tekst-szary);
+    gap: 6px;
+}
+
+.gwiazdki-tekst {
+    margin-left: 8px;
+    color: var(--kolor-tekst);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
+/* ocena(zaznaczanie gwiazdek) */
+.ocena-radio {
+    display: inline-flex;
+    flex-direction: row-reverse;
+    gap: 4px;
+    justify-content: flex-end;
+}
+
+    .ocena-radio input[type="radio"] {
+        display: none;
+    }
+
+    .ocena-radio label {
+        cursor: pointer;
+        font-size: 32px;
+        color: #d4d4d8;
+        padding: 4px;
+        margin: 0;
+        transition: color 0.15s, transform 0.05s;
+        line-height: 1;
+    }
+
+        .ocena-radio label:hover {
+            transform: scale(1.1);
+        }
+
+            
+            .ocena-radio label:hover,
+            .ocena-radio label:hover ~ label {
+                color: var(--kolor-akcent);
+            }
+
+    
+    .ocena-radio input[type="radio"]:checked ~ label {
+        color: var(--kolor-akcent);
+    }
+
+
+/* opinie */
+.opinia-formularz {
+    background: var(--kolor-tlo-karta);
+    border: 1px solid var(--kolor-obramowanie);
+    border-radius: var(--zaokraglenie);
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+
+/* lista opinii */
+.opinie-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.opinia {
+    background: var(--kolor-tlo-karta);
+    border: 1px solid var(--kolor-obramowanie);
+    border-radius: var(--zaokraglenie);
+    padding: 20px;
+}
+
+.opinia-naglowek {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.opinia-autor {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.opinia-ocena {
+    color: var(--kolor-akcent);
+    font-size: 16px;
+}
+
+    .opinia-ocena .bi-star {
+        color: #d4d4d8;
+    }
+
+.opinia-tresc {
+    margin: 0;
+    color: var(--kolor-tekst);
+    white-space: pre-wrap;
+}
+
+.opinia-data {
+    font-size: 12px;
+    color: var(--kolor-tekst-szary);
+    margin-top: 8px;
+}
+
+
+/* filtry */
+.filtry-rozbudowane {
+    background-color: var(--kolor-tlo-karta);
+    border: 1px solid var(--kolor-obramowanie);
+    border-radius: var(--zaokraglenie);
+    padding: 20px;
+    margin-bottom: 24px;
+    display: grid;
+    grid-template-columns: 2fr 2fr 1fr 1fr 1.5fr;
+    gap: 12px;
+    align-items: end;
+}
+
+    .filtry-rozbudowane .pole {
+        margin: 0;
+    }
+
+    .filtry-rozbudowane input,
+    .filtry-rozbudowane select {
+        max-width: none;
+    }
+
+.filtry-przyciski {
+    grid-column: 1 / -1; 
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+
+/* Responsywnosc */
+@media (max-width: 900px) {
+    .filtry-rozbudowane {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .profil-karta {
+        padding: 24px;
+        gap: 20px;
+    }
+
+    .avatar-duzy {
+        width: 96px;
+        height: 96px;
+        font-size: 40px;
+    }
+}
+
+@media (max-width: 600px) {
+    .filtry-rozbudowane {
+        grid-template-columns: 1fr;
+    }
+
+    .profil-karta {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .opinia-naglowek {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .ocena-radio label {
+        padding: 6px 10px;
+    }
+}
+
 
