@@ -20,7 +20,9 @@ namespace FullstackAPPProject.Data
 
             var anna = new Uzytkownik { Nazwa = "anna", Haslo = ZahashujHaslo("haslo") };
             var piotr = new Uzytkownik { Nazwa = "piotr", Haslo = ZahashujHaslo("haslo") };
-            db.Uzytkownicy.AddRange(anna, piotr);
+            var kasia = new Uzytkownik { Nazwa = "kasia", Haslo = ZahashujHaslo("haslo"), Rola = "Uczen"};
+
+            db.Uzytkownicy.AddRange(anna, piotr, kasia);
             db.SaveChanges();
 
             db.Ogloszenia.AddRange(
@@ -67,9 +69,90 @@ namespace FullstackAPPProject.Data
                     KategoriaId = fizyka.Id,
                     UzytkownikId = anna.Id,
                     DataDodania = DateTime.Now.AddHours(-12)
+                },
+                new Ogloszenie
+                {
+                    Tytul = "Chemia organiczna - studia",
+                    Opis = "Doktorant chemii organicznej, pomoc dla studentów kierunków przyrodniczych.",
+                    Cena = 110,
+                    Miasto = "Poznań",
+                    Forma = "Online",
+                    KategoriaId = chemia.Id,
+                    UzytkownikId = anna.Id,
+                    DataDodania = DateTime.Now.AddHours(-2)
+                },
+                new Ogloszenie
+                {
+                    Tytul = "Język polski - matura ustna i pisemna",
+                    Opis = "Polonistka po UJ. Pomogę z lekturami, rozprawkami i interpretacją.",
+                    Cena = 85,
+                    Miasto = "Kraków",
+                    Forma = "Stacjonarnie",
+                    KategoriaId = polski.Id,
+                    UzytkownikId = piotr.Id,
+                    DataDodania = DateTime.Now.AddHours(-20)
+                }
+
+            );
+            db.SaveChanges();
+            
+            var ogloszenieMat = db.Ogloszenia.First(o => o.UzytkownikId == anna.Id && o.KategoriaId == matematyka.Id);
+            var ogloszeniePython = db.Ogloszenia.First(o => o.UzytkownikId == piotr.Id && o.KategoriaId == informatyka.Id);
+
+            db.Wiadomosci.AddRange(
+                
+                new Wiadomosc
+                {
+                    Tresc = "Cześć! Chciałabym się umówić na korki z matmy. Jakie masz wolne terminy?",
+                    NadawcaId = kasia.Id,
+                    OdbiorcaId = anna.Id,
+                    OgloszenieId = ogloszenieMat.Id,
+                    DataWyslania = DateTime.Now.AddHours(-2),
+                    Przeczytana = true
+                },
+                new Wiadomosc
+                {
+                    Tresc = "Cześć Kasia! Mogę w środy i piątki po 16:00. Pasuje?",
+                    NadawcaId = anna.Id,
+                    OdbiorcaId = kasia.Id,
+                    OgloszenieId = ogloszenieMat.Id,
+                    DataWyslania = DateTime.Now.AddHours(-1),
+                    Przeczytana = false
+                },
+                
+                new Wiadomosc
+                {
+                    Tresc = "Dzień dobry, czy uczy Pan też zaawansowanego Pythona (Django, REST)?",
+                    NadawcaId = kasia.Id,
+                    OdbiorcaId = piotr.Id,
+                    OgloszenieId = ogloszeniePython.Id,
+                    DataWyslania = DateTime.Now.AddMinutes(-30),
+                    Przeczytana = false
                 }
             );
             db.SaveChanges();
+
+            
+            db.Opinie.AddRange(
+                new Opinia
+                {
+                    Ocena = 5,
+                    Tresc = "Świetna nauczycielka! Wreszcie zrozumiałam pochodne. Bardzo polecam.",
+                    AutorId = kasia.Id,
+                    KorepetytorId = anna.Id,
+                    DataDodania = DateTime.Now.AddDays(-2)
+                },
+                new Opinia
+                {
+                    Ocena = 4,
+                    Tresc = "Bardzo dobre lekcje, spokojne tempo, dużo praktyki. Mogłoby być więcej projektów.",
+                    AutorId = kasia.Id,
+                    KorepetytorId = piotr.Id,
+                    DataDodania = DateTime.Now.AddDays(-1)
+                }
+            );
+            db.SaveChanges();
+
         }
 
         public static string ZahashujHaslo(string haslo)
