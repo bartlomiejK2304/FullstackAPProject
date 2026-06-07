@@ -1,0 +1,21 @@
+﻿
+
+@model Uzytkownik
+@{
+    string rozmiar = ViewData["Rozmiar"] as string ?? "sredni"; // efektywniejsze niz obrazek taki jak na fb
+}
+
+@if (Model != null)
+{
+    if (!string.IsNullOrEmpty(Model.ZdjecieProfilPath))
+    {
+        <img src="@Model.ZdjecieProfilPath" alt="@Model.Nazwa" class="avatar avatar-@rozmiar" />
+    }
+    else
+    {
+
+        <span class="avatar avatar-@rozmiar avatar-inicjal">
+            @(Model.Nazwa.Length > 0 ? Model.Nazwa[0].ToString().ToUpper() : "?")
+        </span>
+    }
+}

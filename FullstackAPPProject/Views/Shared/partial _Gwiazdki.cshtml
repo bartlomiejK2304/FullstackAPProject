@@ -1,0 +1,35 @@
+﻿
+@{
+    double srednia = ViewData["Srednia"] != null ? Convert.ToDouble(ViewData["Srednia"]) : 0;
+    int ilosc = ViewData["Ilosc"] != null ? Convert.ToInt32(ViewData["Ilosc"]) : 0;
+    bool ukryjGdyBrak = ViewData["UkryjGdyBrak"] != null && (bool)ViewData["UkryjGdyBrak"];
+}
+
+@if (ilosc == 0 && !ukryjGdyBrak)
+{
+    <span class="gwiazdki gwiazdki-brak">
+        <i class="bi bi-star"></i>
+        <span>Brak ocen</span>
+    </span>
+}
+else if (ilosc > 0)
+{
+    <span class="gwiazdki">
+        @for (int i = 1; i <= 5; i++)
+        {
+            if (srednia >= i)
+            {
+                <i class="bi bi-star-fill"></i>
+            }
+            else if (srednia >= i - 0.5)
+            {
+                <i class="bi bi-star-half"></i>
+            }
+            else
+            {
+                <i class="bi bi-star"></i>
+            }
+        }
+        <span class="gwiazdki-tekst">@srednia.ToString("0.0") (@ilosc)</span>
+    </span>
+}
