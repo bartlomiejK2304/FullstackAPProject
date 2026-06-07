@@ -1,65 +1,134 @@
 @model List<Ogloszenie>
-    @{
+@{
     ViewData["Title"] = "Og³oszenia";
     var kategorie = ViewBag.Kategorie as List<Kategoria>;
     var szukaj = ViewBag.Szukaj as string;
     var wybrana = ViewBag.WybranaKategoria as int?;
-    }
-
-    <h1>Wszystkie og³oszenia</h1>
-
-    @* Formularz wyszukiwania *@
-    <form method="get" class="filtry">
-        <div class="pole">
-            <label>Szukaj w tytule</label>
-            <input type="text" name="szukaj" value="@szukaj" />
-        </div>
-
-        <div class="pole">
-            <label>Kategoria</label>
-            <select name="kategoriaId">
-                <option value="">-- wszystkie --</option>
-                @if (kategorie != null)
+    var cenaMin = ViewBag.CenaMin as decimal?;
+    var cenaMax = ViewBag.CenaMax as decimal?;
+    var wybranaForma = (ViewBag.Forma as string) ?? "Wszystkie";
+ 
+    var ikonyKategorii = new Dictionary<string, string>
+    {
+        { "Matematyka", "bi-calculator" },
+        { "Fizyka", "bi-lightning-charge" },
+        { "Jêzyk angielski", "bi-translate" },
+        { "Jêzyk polski", "bi-book" },
+        { "Informatyka", "bi-laptop" },
+        { "Chemia", "bi-droplet-half" }
+    };
+}
+ 
+<h1><i class="bi bi-search"></i> Wszystkie og³oszenia</h1>
+ 
+@* ---- Formularz wyszukiwania ---- *@
+<form method="get" class="filtry-rozbudowane">
+    <div class="pole">
+        <label>Szukaj w tytule</label>
+        <input type="text" name="szukaj" value="@szukaj" placeholder="np. matematyka" />
+    </div>
+ 
+    <div class="pole">
+        <label>Kategoria</label>
+        <select name="kategoriaId">
+            <option value="">-- wszystkie --</option>
+            @if (kategorie != null)
             {
                 foreach (var k in kategorie)
                 {
                     if (wybrana == k.Id)
                     {
-                <option value="@k.Id" selected>@k.Nazwa</option>
+                        <option value="@k.Id" selected>@k.Nazwa</option>
                     }
                     else
                     {
-                <option value="@k.Id">@k.Nazwa</option>
+                        <option value="@k.Id">@k.Nazwa</option>
                     }
                 }
             }
-            </select>
+        </select>
         </div>
-
-        <button type="submit" class="button">Szukaj</button>
-        <a asp-action="Index" class="button-szary">Wyczyœæ</a>
-    </form>
-
-    @* Lista wyników *@
-    @if (Model.Count == 0)
+ 
+    <div class="pole">
+        <label>Cena od (z³)</label>
+        <input type="number" name="cenaMin" step="1" min="0" value="@cenaMin" placeholder="0" />
+    </div>
+ 
+    <div class="pole">
+        <label>Cena do (z³)</label>
+        <input type="number" name="cenaMax" step="1" min="0" value="@cenaMax" placeholder="999" />
+    </div>
+ 
+    <div class="pole">
+        <label>Forma zajêæ</label>
+        <select name="forma">
+            @{
+                var formy = new[] { "Wszystkie", "Online", "Stacjonarnie" };
+            }
+            @foreach (var f in formy)
+            {
+                if (f == wybranaForma)
+                {
+                    <option value="@f" selected>@f</option>
+                }
+                else
+                {
+                    <option value="@f">@f</option>
+                }
+            }
+        </select>
+    </div>
+ 
+    <div class="filtry-przyciski">
+        <button type="submit" class="button"><i class="bi bi-search"></i> Szukaj</button>
+        <a asp-action="Index" class="button-szary"><i class="bi bi-x-circle"></i> Wyczyœæ</a>
+    </div>
+</form>
+ 
+@* ---- Lista wyników ---- *@
+@if (Model.Count == 0)
 {
-    <p>Brak og³oszeñ pasuj¹cych do wyszukiwania.</p>
+    <div class="info-pasek">
+        <i class="bi bi-info-circle"></i>
+        Brak og³oszeñ pasuj¹cych do wyszukiwania.
+    </div>
 }
 else
 {
-    <p>Znaleziono: @Model.Count</p>
+    <p style="color: var(--kolor-tekst-szary);">Znaleziono: <strong>@Model.Count</strong></p>
     <div class="lista">
         @foreach (var o in Model)
         {
-        <div class="karta">
-            <h3>
-                <a asp-action="Szczegoly" asp-route-id="@o.Id">@o.Tytul</a>
-            </h3>
-            <p><strong>Kategoria:</strong> @o.Kategoria?.Nazwa</p>
-            <p><strong>Miasto:</strong> @o.Miasto (@o.Forma)</p>
-            <p><strong>Cena:</strong> @o.Cena z³ / godzinê</p>
-            <p class="data">Dodano: @o.DataDodania.ToString("dd.MM.yyyy")</p>
-        </div>
+            var ikona = ikonyKategorii.ContainsKey(o.Kategoria?.Nazwa ?? "")
+                ? ikonyKategorii[o.Kategoria!.Nazwa]
+                : "bi-book";
+ 
+            <div class="karta">
+                @if (!string.IsNullOrEmpty(o.ZdjeciePath))
+                {
+                    <img src="@o.ZdjeciePath" alt="@o.Tytul" class="karta-zdjecie" />
+                }
+                else
+                {
+                    <div class="karta-zdjecie-placeholder">
+                        <i class="bi @ikona"></i>
+                    </div>
+                }
+                <div class="karta-tresc">
+                    <span class="karta-kategoria-tag">@o.Kategoria?.Nazwa</span>
+                    <h3>
+                        <a asp-action="Szczegoly" asp-route-id="@o.Id">@o.Tytul</a>
+                    </h3>
+                    <div class="karta-info"><i class="bi bi-geo-alt"></i> @o.Miasto</div>
+                    <div class="karta-info"><i class="bi bi-laptop"></i> @o.Forma</div>
+                    <div class="karta-info">
+                        <i class="bi bi-person"></i>
+                        <a asp-controller="Konto" asp-action="Profil" asp-route-id="@o.UzytkownikId">@o.Uzytkownik?.Nazwa</a>
+                    </div>
+                    <div class="karta-cena">@o.Cena z³ / godz.</div>
+                    <p class="data">Dodano: @o.DataDodania.ToString("dd.MM.yyyy")</p>
+                </div>
+            </div>
         }
     </div>
 }

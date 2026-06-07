@@ -5,36 +5,152 @@
         ? int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value)
         : 0;
     bool czyMoje = idZalogowanego == Model.UzytkownikId;
+
+    var ikonyKategorii = new Dictionary<string, string>
+    {
+        { "Matematyka", "bi-calculator" },
+        { "Fizyka", "bi-lightning-charge" },
+        { "Jêzyk angielski", "bi-translate" },
+        { "Jêzyk polski", "bi-book" },
+        { "Informatyka", "bi-laptop" },
+        { "Chemia", "bi-droplet-half" }
+    };
+    var ikona = ikonyKategorii.ContainsKey(Model.Kategoria?.Nazwa ?? "")
+        ? ikonyKategorii[Model.Kategoria!.Nazwa]
+        : "bi-book";
 }
 
-<h1>@Model.Tytul</h1>
+<p><a asp-action="Index"><i class="bi bi-arrow-left"></i> Wróæ do listy og³oszeñ</a></p>
 
-<div class="karta">
-    <p><strong>Kategoria:</strong> @Model.Kategoria?.Nazwa</p>
-    <p><strong>Miasto:</strong> @Model.Miasto</p>
-    <p><strong>Forma zajêæ:</strong> @Model.Forma</p>
-    <p><strong>Cena:</strong> @Model.Cena z³ / godzinê</p>
-    <p><strong>Autor:</strong> @Model.Uzytkownik?.Nazwa</p>
-    <p><strong>Data dodania:</strong> @Model.DataDodania.ToString("dd.MM.yyyy HH:mm")</p>
+<div class="szczegoly">
+    @* Zdjêcie og³oszenia lub placeholder *@
+    @if (!string.IsNullOrEmpty(Model.ZdjeciePath))
+    {
+        <img src="@Model.ZdjeciePath" alt="@Model.Tytul" class="szczegoly-zdjecie" />
+    }
+    else
+    {
+        <div class="szczegoly-zdjecie-placeholder">
+            <i class="bi @ikona"></i>
+        </div>
+    }
 
-    <h3>Opis</h3>
-    <p>@Model.Opis</p>
+    <div class="szczegoly-tresc">
+        <span class="karta-kategoria-tag">@Model.Kategoria?.Nazwa</span>
+        <h1 style="margin-top: 12px;">@Model.Tytul</h1>
+
+        <div class="szczegoly-info-grid">
+            <div class="szczegoly-info-item">
+                <span><i class="bi bi-geo-alt"></i> Miasto</span>
+                <span>@Model.Miasto</span>
+            </div>
+            <div class="szczegoly-info-item">
+                <span><i class="bi bi-laptop"></i> Forma zajêæ</span>
+                <span>@Model.Forma</span>
+            </div>
+            <div class="szczegoly-info-item">
+                <span><i class="bi bi-person"></i> Korepetytor</span>
+                <span>
+                    <a asp-controller="Konto" asp-action="Profil" asp-route-id="@Model.UzytkownikId">
+                        @Model.Uzytkownik?.Nazwa
+                    </a>
+                </span>
+            </div>
+            <div class="szczegoly-info-item">
+                <span><i class="bi bi-star"></i> Ocena</span>
+                <span>
+                    @{
+                        var vdSzczGwiazdki = new ViewDataDictionary(ViewData)
+                        {
+                            { "Srednia", (double)(ViewBag.SredniaOcena ?? 0.0) },
+                            { "Ilosc", (int)(ViewBag.LiczbaOpinii ?? 0) }
+                        };
+                    }
+                    @await Html.PartialAsync("_Gwiazdki", vdSzczGwiazdki)
+                </span>
+            </div>
+            <div class="szczegoly-info-item">
+                <span><i class="bi bi-calendar"></i> Dodano</span>
+                <span>@Model.DataDodania.ToString("dd.MM.yyyy HH:mm")</span>
+            </div>
+            <div class="szczegoly-info-item">
+                <span><i class="bi bi-cash"></i> Cena za godzinê</span>
+                <span class="szczegoly-cena">@Model.Cena z³</span>
+            </div>
+        </div>
+        <h2><i class="bi bi-card-text"></i> Opis</h2>
+        <p style="white-space: pre-wrap;">@Model.Opis</p>
+ 
+        @* Przyciski edycji - tylko dla autora og³oszenia *@
+        @if (czyMoje)
+        {
+            <div class="przyciski">
+                <a asp-action="Edytuj" asp-route-id="@Model.Id" class="button">
+                    <i class="bi bi-pencil"></i> Edytuj
+                </a>
+ 
+                <form asp-action="Usun" method="post" style="display:inline;">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <button type="submit" class="button-czerwony"
+                            onclick="return confirm('Na pewno usun¹æ to og³oszenie?');">
+                        <i class="bi bi-trash"></i> Usuñ
+                    </button>
+                </form>
+            </div>
+        }
+ 
+        @* Formularz "Napisz wiadomoœæ" - dla zalogowanych, którzy NIE s¹ autorem *@
+        @if (User.Identity!.IsAuthenticated && !czyMoje)
+        {
+            <div class="kontakt-formularz">
+                <h2><i class="bi bi-chat-dots"></i> Napisz do korepetytora</h2>
+ 
+                @if (TempData["WiadomoscBlad"] != null)
+                {
+                    <div class="blad">@TempData["WiadomoscBlad"]</div>
+                }
+ 
+                <form method="post" asp-controller="Wiadomosci" asp-action="Wyslij">
+                    <input type="hidden" name="ogloszenieId" value="@Model.Id" />
+                    <input type="hidden" name="odbiorcaId" value="@Model.UzytkownikId" />
+ 
+                    <div class="pole">
+                        <label>Twoja wiadomoœæ</label>
+                        <textarea name="tresc" rows="4" required maxlength="1000"
+                                  placeholder="Czeœæ! Chcia³bym siê dowiedzieæ wiêcej o og³oszeniu..."></textarea>
+                    </div>
+ 
+                    <button type="submit" class="button">
+                        <i class="bi bi-send"></i> Wyœlij wiadomoœæ
+                    </button>
+                </form>
+            </div>
+        }
+        else if (!User.Identity.IsAuthenticated)
+        {
+            <div class="info-pasek" style="margin-top: 24px;">
+                <i class="bi bi-info-circle"></i>
+                <span>
+                    <a asp-controller="Konto" asp-action="Logowanie">Zaloguj siê</a>,
+                    ¿eby napisaæ wiadomoœæ do korepetytora.
+                </span>
+            </div>
+        }
+    </div>
 </div>
 
-@* Jeœli to moje og³oszenie - poka¿ przyciski edycji/usuwania *@
-@if (czyMoje)
-{
-<div class="przyciski">
-    <a asp-action="Edytuj" asp-route-id="@Model.Id" class="button">Edytuj</a>
 
-    <form asp-action="Usun" method="post" style="display:inline;">
-        <input type="hidden" name="id" value="@Model.Id" />
-        <button type="submit" class="button-czerwony"
-                onclick="return confirm('Na pewno usun¹æ?');">
-            Usuñ
-        </button>
-    </form>
-</div>
-}
 
-<p><a asp-action="Index">&larr; Wróæ do listy</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+

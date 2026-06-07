@@ -1,42 +1,72 @@
 @model List<Ogloszenie>
-    @{
+@{
     ViewData["Title"] = "Moje og³oszenia";
-    }
+    var ikonyKategorii = new Dictionary<string, string>
+    {
+        { "Matematyka", "bi-calculator" },
+        { "Fizyka", "bi-lightning-charge" },
+        { "Jêzyk angielski", "bi-translate" },
+        { "Jêzyk polski", "bi-book" },
+        { "Informatyka", "bi-laptop" },
+        { "Chemia", "bi-droplet-half" }
+    };
+}
 
-    <h1>Moje og³oszenia</h1>
+<h1><i class="bi bi-collection"></i> Moje og³oszenia</h1>
 
-    <p><a asp-action="Dodaj" class="button">+ Dodaj nowe</a></p>
+<p><a asp-action="Dodaj" class="button"><i class="bi bi-plus-circle"></i> Dodaj nowe</a></p>
 
-    @if (Model.Count == 0)
+@if (Model.Count == 0)
 {
-    <p>Nie masz jeszcze ¿adnych og³oszeñ.</p>
+    <div class="info-pasek">
+        <i class="bi bi-info-circle"></i>
+        Nie masz jeszcze ¿adnych og³oszeñ. Dodaj pierwsze klikaj¹c przycisk powy¿ej.
+    </div>
 }
 else
 {
     <div class="lista">
         @foreach (var o in Model)
         {
-        <div class="karta">
-            <h3>
-                <a asp-action="Szczegoly" asp-route-id="@o.Id">@o.Tytul</a>
-            </h3>
-            <p><strong>Kategoria:</strong> @o.Kategoria?.Nazwa</p>
-            <p><strong>Miasto:</strong> @o.Miasto</p>
-            <p><strong>Cena:</strong> @o.Cena z³ / godzinê</p>
-            <p class="data">Dodano: @o.DataDodania.ToString("dd.MM.yyyy")</p>
+            var ikona = ikonyKategorii.ContainsKey(o.Kategoria?.Nazwa ?? "")
+                ? ikonyKategorii[o.Kategoria!.Nazwa]
+                : "bi-book";
 
-            <div class="przyciski">
-                <a asp-action="Edytuj" asp-route-id="@o.Id" class="button">Edytuj</a>
+            <div class="karta">
+                @if (!string.IsNullOrEmpty(o.ZdjeciePath))
+                {
+                    <img src="@o.ZdjeciePath" alt="@o.Tytul" class="karta-zdjecie" />
+                }
+                else
+                {
+                    <div class="karta-zdjecie-placeholder">
+                        <i class="bi @ikona"></i>
+                    </div>
+                }
+                <div class="karta-tresc">
+                    <span class="karta-kategoria-tag">@o.Kategoria?.Nazwa</span>
+                    <h3>
+                        <a asp-action="Szczegoly" asp-route-id="@o.Id">@o.Tytul</a>
+                    </h3>
+                    <div class="karta-info"><i class="bi bi-geo-alt"></i> @o.Miasto</div>
+                    <div class="karta-cena">@o.Cena z³ / godz.</div>
+                    <p class="data">Dodano: @o.DataDodania.ToString("dd.MM.yyyy")</p>
 
-                <form asp-action="Usun" method="post" style="display:inline;">
-                    <input type="hidden" name="id" value="@o.Id" />
-                    <button type="submit" class="button-czerwony"
-                            onclick="return confirm('Na pewno usun¹æ?');">
-                        Usuñ
-                    </button>
-                </form>
+                    <div class="przyciski">
+                        <a asp-action="Edytuj" asp-route-id="@o.Id" class="button">
+                            <i class="bi bi-pencil"></i> Edytuj
+                        </a>
+
+                        <form asp-action="Usun" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@o.Id" />
+                            <button type="submit" class="button-czerwony"
+                                    onclick="return confirm('Na pewno usun¹æ?');">
+                                <i class="bi bi-trash"></i> Usuñ
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
-        </div>
         }
     </div>
 }
