@@ -1,5 +1,7 @@
+using FullstackAPPProject.Data;
 using FullstackAPPProject.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace FullstackAPPProject.Controllers
@@ -7,37 +9,39 @@ namespace FullstackAPPProject.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly AppDbContext _db;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, AppDbContext db)
         {
             _logger = logger;
+            _db = db;
         }
 
         public IActionResult Index()
         {
-            
-            var testoweOgloszenia = new List<Ogloszenie>
-        {
+            // Najnowsze 3 ogłoszenia z bazy żeby pokazać je na landing page
+            var najnowsze = _db.Ogloszenia
+                .Include(o => o.Kategoria)
+                .Include(o => o.Uzytkownik)
+                .OrderByDescending(o => o.DataDodania)
+                .Take(3)
+                .ToList();
 
-        new Ogloszenie {
-                Id = 1,
-                Tytul = "Korepetycje z Matematyki",
-                Miasto = "Warszawa",
-                Cena = 60,
-                Kategoria = new Kategoria { Nazwa = "Matematyka" } 
-            },
+            // Kategorie z liczbą ogłoszeń - do sekcji "Wybierz przedmiot"
+            ViewBag.Kategorie = _db.Kategorie
+                .Select(k => new {
+                    k.Id,
+                    k.Nazwa,
+                    Ilosc = k.Ogloszenia.Count
+                })
+                .ToList();
 
-            new Ogloszenie {
-                Id = 2,
-                Tytul = "Angielski dla początkujących",
-                Miasto = "Kraków",
-                Cena = 50,
-                Kategoria = new Kategoria { Nazwa = "Języki obce" }
-            }
-        };
+            // Proste statystyki na landing page
+            ViewBag.LiczbaOgloszen = _db.Ogloszenia.Count();
+            ViewBag.LiczbaKorepetytorow = _db.Uzytkownicy.Count(u => u.Rola == "Korepetytor");
+            ViewBag.LiczbaKategorii = _db.Kategorie.Count();
 
-            
-            return View(testoweOgloszenia);
+            return View(najnowsze);
         }
 
         public IActionResult Privacy()

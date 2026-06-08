@@ -1,16 +1,76 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model List<Ogloszenie>
+@{
+    ViewData["Title"] = "Strona główna";
+
+    // Mapa nazwy kategorii -> ikonka Bootstrap Icons.
+    // Robione w widoku żeby było prosto i nie ruszać modelu.
+    var ikonyKategorii = new Dictionary<string, string>
+    {
+        { "Matematyka", "bi-calculator" },
+        { "Fizyka", "bi-lightning-charge" },
+        { "Język angielski", "bi-translate" },
+        { "Język polski", "bi-book" },
+        { "Informatyka", "bi-laptop" },
+        { "Chemia", "bi-droplet-half" }
+    };
 }
 
-<h1>Witaj w serwisie KorkiPL!</h1>
-<p>Tutaj znajdziesz korepetytorów albo dodasz własne ogłoszenie.</p>
+@* ---- HERO / sekcja powitalna ---- *@
+<section class="hero">
+    <h1>Znajdź idealnego korepetytora</h1>
+    <p>Setki korepetytorów online i stacjonarnie. Matematyka, języki, programowanie - wybierz przedmiot i zacznij naukę już dziś.</p>
+    <div class="hero-przyciski">
+        <a asp-controller="Ogloszenia" asp-action="Index" class="button button-akcent">
+            <i class="bi bi-search"></i> Przeglądaj ogłoszenia
+        </a>
+        @if (!User.Identity!.IsAuthenticated)
+        {
+            <a asp-controller="Konto" asp-action="Rejestracja" class="button button-bialy">
+                <i class="bi bi-person-plus"></i> Załóż konto
+            </a>
+        }
+    </div>
+</section>
 
-<p>
-    <a asp-controller="Ogloszenia" asp-action="Index" class="button">
-        Zobacz wszystkie ogłoszenia
-    </a>
-</p>
+@* ---- STATYSTYKI ---- *@
+<div class="statystyki">
+    <div class="statystyka">
+        <div class="statystyka-liczba">@ViewBag.LiczbaOgloszen</div>
+        <div class="statystyka-opis">Aktywnych ogłoszeń</div>
+    </div>
+    <div class="statystyka">
+        <div class="statystyka-liczba">@ViewBag.LiczbaKorepetytorow</div>
+        <div class="statystyka-opis">Korepetytorów</div>
+    </div>
+    <div class="statystyka">
+        <div class="statystyka-liczba">@ViewBag.LiczbaKategorii</div>
+        <div class="statystyka-opis">Przedmiotów</div>
+    </div>
+</div>
 
+@* ---- KATEGORIE - kafelki z ikonkami ---- *@
+<h2>Wybierz przedmiot</h2>
+<div class="kategorie-grid">
+    @if (ViewBag.Kategorie != null)
+    {
+        @foreach (var k in ViewBag.Kategorie)
+        {
+            var ikona = ikonyKategorii.ContainsKey((string)k.Nazwa)
+                ? ikonyKategorii[(string)k.Nazwa]
+                : "bi-book";
+
+            <a asp-controller="Ogloszenia" asp-action="Index" asp-route-kategoriaId="@k.Id" class="kategoria-kafelek">
+                <div class="kategoria-ikona">
+                    <i class="bi @ikona"></i>
+                </div>
+                <div class="kategoria-nazwa">@k.Nazwa</div>
+                <div class="kategoria-ilosc">@k.Ilosc ogłoszeń</div>
+            </a>
+        }
+    }
+</div>
+
+@* ---- NAJNOWSZE OGŁOSZENIA ---- *@
 <h2>Najnowsze ogłoszenia</h2>
 
 @if (Model.Count == 0)
@@ -22,16 +82,38 @@ else
     <div class="lista">
         @foreach (var o in Model)
         {
+            var ikona = ikonyKategorii.ContainsKey(o.Kategoria?.Nazwa ?? "")
+                ? ikonyKategorii[o.Kategoria!.Nazwa]
+                : "bi-book";
+
             <div class="karta">
-                <h3>
-                    <a asp-controller="Ogloszenia" asp-action="Szczegoly" asp-route-id="@o.Id">
-                        @o.Tytul
-                    </a>
-                </h3>
-                <p><strong>Kategoria:</strong> @o.Kategoria?.Nazwa</p>
-                <p><strong>Miasto:</strong> @o.Miasto</p>
-                <p><strong>Cena:</strong> @o.Cena zł / godzinę</p>
+                @* Jeśli jest zdjęcie - pokaż je, jeśli nie - placeholder z ikonką *@
+                @if (!string.IsNullOrEmpty(o.ZdjeciePath))
+                {
+                    <img src="@o.ZdjeciePath" alt="@o.Tytul" class="karta-zdjecie" />
+                }
+                else
+                {
+                    <div class="karta-zdjecie-placeholder">
+                        <i class="bi @ikona"></i>
+                    </div>
+                }
+                <div class="karta-tresc">
+                    <span class="karta-kategoria-tag">@o.Kategoria?.Nazwa</span>
+                    <h3>
+                        <a asp-controller="Ogloszenia" asp-action="Szczegoly" asp-route-id="@o.Id">@o.Tytul</a>
+                    </h3>
+                    <div class="karta-info"><i class="bi bi-geo-alt"></i> @o.Miasto</div>
+                    <div class="karta-info"><i class="bi bi-laptop"></i> @o.Forma</div>
+                    <div class="karta-cena">@o.Cena zł / godz.</div>
+                </div>
             </div>
         }
     </div>
+
+    <p style="text-align: center; margin-top: 32px;">
+        <a asp-controller="Ogloszenia" asp-action="Index" class="button">
+            Zobacz wszystkie ogłoszenia <i class="bi bi-arrow-right"></i>
+        </a>
+    </p>
 }
