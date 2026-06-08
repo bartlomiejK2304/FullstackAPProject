@@ -5,25 +5,26 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@ViewData["Title"] - KorkiPL</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
 </head>
 <body>
     @* Liczymy nieprzeczytane wiadomości dla zalogowanego usera - prosto, bezpośrednio z DbContext *@
     @{
-    int nieprzeczytaneWiadomosci = 0;
-    if (User.Identity!.IsAuthenticated)
-    {
-        var idText = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-        if (int.TryParse(idText, out int mojeId))
+        int nieprzeczytaneWiadomosci = 0;
+        if (User.Identity!.IsAuthenticated)
         {
-            nieprzeczytaneWiadomosci = Db.Wiadomosci.Count(w => w.OdbiorcaId == mojeId && !w.Przeczytana);
+            var idText = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (int.TryParse(idText, out int mojeId))
+            {
+                nieprzeczytaneWiadomosci = Db.Wiadomosci.Count(w => w.OdbiorcaId == mojeId && !w.Przeczytana);
+            }
         }
-    }
     }
 
     <header>
         <nav>
-            <a class="logo" asp-controller="Home" asp-action="Index">KorkiPL</a>
+            <a class="logo" asp-controller="Home" asp-action="Index"><i class="bi bi-mortarboard-fill"></i> KorkiPL</a>
 
 
 
@@ -33,15 +34,15 @@
 
                 @if (User.Identity!.IsAuthenticated)
                 {
-                <li><a asp-controller="Ogloszenia" asp-action="Moje">Moje ogłoszenia</a></li>
-                <li><a asp-controller="Ogloszenia" asp-action="Dodaj">+ Dodaj</a></li>
-                <li class="user-info">Zalogowany: @User.Identity.Name</li>
-                <li><a asp-controller="Konto" asp-action="Wyloguj">Wyloguj</a></li>
+                    <li><a asp-controller="Ogloszenia" asp-action="Moje">Moje ogłoszenia</a></li>
+                    <li><a asp-controller="Ogloszenia" asp-action="Dodaj">+ Dodaj</a></li>
+                    <li class="user-info">Zalogowany: @User.Identity.Name</li>
+                    <li><a asp-controller="Konto" asp-action="Wyloguj">Wyloguj</a></li>
                 }
                 else
                 {
-                <li><a asp-controller="Konto" asp-action="Logowanie">Zaloguj</a></li>
-                <li><a asp-controller="Konto" asp-action="Rejestracja">Zarejestruj</a></li>
+                    <li><a asp-controller="Konto" asp-action="Logowanie">Zaloguj</a></li>
+                    <li><a asp-controller="Konto" asp-action="Rejestracja">Zarejestruj</a></li>
                 }
             </ul>
         </nav>
