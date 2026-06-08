@@ -1,0 +1,63 @@
+@using FullstackAPPProject.Controllers
+@model List<KonwersacjaPodglad>
+    @{
+    ViewData["Title"] = "Wiadomoúci";
+
+    var ikonyKategorii = new Dictionary<string, string>
+    {
+        { "Matematyka", "bi-calculator" },
+        { "Fizyka", "bi-lightning-charge" },
+        { "JÍzyk angielski", "bi-translate" },
+        { "JÍzyk polski", "bi-book" },
+        { "Informatyka", "bi-laptop" },
+        { "Chemia", "bi-droplet-half" }
+    };
+    }
+
+    <h1><i class="bi bi-chat-dots"></i> Wiadomoúci</h1>
+
+    @if (Model.Count == 0)
+{
+    <div class="info-pasek">
+        <i class="bi bi-info-circle"></i>
+        Nie masz jeszcze øadnych konwersacji. Wejdü na dowolne og≥oszenie i napisz do korepetytora.
+    </div>
+}
+else
+{
+    <div class="konwersacje-lista">
+        @foreach (var k in Model)
+        {
+            var ikona = ikonyKategorii.ContainsKey(k.Ogloszenie.Kategoria?.Nazwa ?? "")
+                ? ikonyKategorii[k.Ogloszenie.Kategoria!.Nazwa]
+                : "bi-book";
+
+        <a asp-action="Konwersacja"
+           asp-route-ogloszenieId="@k.OgloszenieId"
+           asp-route-innyId="@k.InnyId"
+           class="konwersacja-item">
+            <div class="konwersacja-ikona">
+                <i class="bi @ikona"></i>
+            </div>
+            <div class="konwersacja-tresc">
+                <div class="konwersacja-naglowek">
+                    <strong>@k.Inny.Nazwa</strong>
+                    <span class="data">@k.OstatniaWiadomosc.DataWyslania.ToString("dd.MM.yyyy HH:mm")</span>
+                </div>
+                <div class="konwersacja-ogloszenie">
+                    <i class="bi bi-tag"></i> @k.Ogloszenie.Tytul
+                </div>
+                <div class="konwersacja-podglad">
+                    @(k.OstatniaWiadomosc.Tresc.Length > 80
+                            ? k.OstatniaWiadomosc.Tresc.Substring(0, 80) + "..."
+                            : k.OstatniaWiadomosc.Tresc)
+                </div>
+            </div>
+            @if (k.Nieprzeczytane > 0)
+                {
+            <div class="konwersacja-licznik">@k.Nieprzeczytane</div>
+                }
+        </a>
+        }
+    </div>
+}

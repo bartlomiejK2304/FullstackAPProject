@@ -1,0 +1,66 @@
+@model List<Wiadomosc>
+    @{
+    ViewData["Title"] = "Konwersacja";
+    var ogloszenie = ViewBag.Ogloszenie as Ogloszenie;
+    var inny = ViewBag.Inny as Uzytkownik;
+    int mojeId = ViewBag.MojeId;
+    }
+
+    <p><a asp-action="Index"><i class="bi bi-arrow-left"></i> Wróæ do listy wiadomoœci</a></p>
+
+    @* Nag³ówek konwersacji  *@
+    <div class="konwersacja-header">
+        <div>
+            <h1 style="margin: 0; border: none;">
+                <i class="bi bi-person-circle"></i> @inny?.Nazwa
+            </h1>
+            <p style="margin: 4px 0 0 0; color: var(--kolor-tekst-szary);">
+                Konwersacja o og³oszeniu:
+                <a asp-controller="Ogloszenia" asp-action="Szczegoly" asp-route-id="@ogloszenie?.Id">
+                    @ogloszenie?.Tytul
+                </a>
+            </p>
+        </div>
+    </div>
+
+    @if (TempData["Blad"] != null)
+{
+    <div class="blad"><i class="bi bi-exclamation-triangle"></i> @TempData["Blad"]</div>
+}
+
+    @* Lista wiadomoœci*@
+    <div class="czat">
+        @if (Model.Count == 0)
+    {
+        <p style="text-align: center; color: var(--kolor-tekst-szary); padding: 32px;">
+            Brak wiadomoœci. Napisz pierwsz¹!
+        </p>
+    }
+    else
+    {
+        foreach (var w in Model)
+        {
+            // Klasa CSS - "moja" jeœli ja jestem nadawc¹, "inny" jeœli ktoœ inny
+            var klasa = w.NadawcaId == mojeId ? "wiadomosc-moja" : "wiadomosc-inny";
+        <div class="wiadomosc @klasa">
+            <div class="wiadomosc-banka">
+                @w.Tresc
+            </div>
+            <div class="wiadomosc-data">
+                @w.DataWyslania.ToString("dd.MM.yyyy HH:mm")
+            </div>
+        </div>
+        }
+    }
+    </div>
+
+    @* Formularz odpowiedzi *@
+    <form method="post" asp-action="Wyslij" class="czat-formularz">
+        <input type="hidden" name="ogloszenieId" value="@ogloszenie?.Id" />
+        <input type="hidden" name="odbiorcaId" value="@inny?.Id" />
+
+        <textarea name="tresc" rows="3" placeholder="Napisz wiadomoœæ..." required maxlength="1000"></textarea>
+        <button type="submit" class="button">
+            <i class="bi bi-send"></i> Wyœlij
+        </button>
+    </form>
