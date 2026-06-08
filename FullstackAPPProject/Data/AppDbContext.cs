@@ -12,10 +12,9 @@ namespace FullstackAPPProject.Data
         public DbSet<Ogloszenie> Ogloszenia { get; set; }
         public DbSet<Wiadomosc> Wiadomosci { get; set; }
         public DbSet<Opinia> Opinie { get; set; }
+        public DbSet<UsuniecieKonta> UsunieciaKont { get; set; }
 
-        // Konfiguracja relacji - bez tego EF próbowałby zrobić kaskadę
-        // na obu relacjach Wiadomosc->Uzytkownik i Opinia->Uzytkownik
-        // i wywaliłby się przy SQLite (multiple cascade paths).
+       
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //opisze jedna zeby bylo wiadomo ocb takie pitupitu jak na bazach danych
