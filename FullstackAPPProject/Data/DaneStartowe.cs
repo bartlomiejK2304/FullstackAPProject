@@ -17,7 +17,8 @@ namespace FullstackAPPProject.Data
 
             db.Kategorie.AddRange(matematyka, fizyka, angielski, polski, informatyka, chemia);
             db.SaveChanges();
-
+          
+            var admin = new Uzytkownik { Nazwa = "admin", Haslo = ZahashujHaslo("admin"), Rola = "Admin" };
             var anna = new Uzytkownik { Nazwa = "anna", Haslo = ZahashujHaslo("haslo") };
             var piotr = new Uzytkownik { Nazwa = "piotr", Haslo = ZahashujHaslo("haslo") };
             var kasia = new Uzytkownik { Nazwa = "kasia", Haslo = ZahashujHaslo("haslo"), Rola = "Uczen"};

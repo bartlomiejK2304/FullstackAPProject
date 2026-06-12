@@ -1,0 +1,71 @@
+@model List<Kategoria>
+@{
+    ViewData["Title"] = "Zarządzanie kategoriami";
+}
+ 
+<p><a asp-action="Index"><i class="bi bi-arrow-left"></i> Wróć do panelu admina</a></p>
+ 
+<h1><i class="bi bi-tags"></i> Kategorie (@Model.Count)</h1>
+ 
+@if (TempData["Blad"] != null)
+{
+    <div class="blad"><i class="bi bi-exclamation-triangle"></i> @TempData["Blad"]</div>
+}
+@if (TempData["Sukces"] != null)
+{
+    <div class="info-pasek" style="background: #dcfce7; border-color: #86efac; color: #166534;">
+        <i class="bi bi-check-circle"></i> @TempData["Sukces"]
+    </div>
+}
+ 
+<div class="formularz-karta" style="margin-bottom: 24px;">
+    <h3 style="margin-top: 0;"><i class="bi bi-plus-circle"></i> Dodaj nową kategorię</h3>
+    <form method="post" asp-action="DodajKategorie" style="display: flex; gap: 12px; align-items: end;">
+        <div class="pole" style="flex: 1; margin: 0;">
+            <label>Nazwa kategorii</label>
+            <input type="text" name="nazwa" placeholder="np. Biologia" required />
+        </div>
+        <button type="submit" class="button" style="height: 42px;">
+            <i class="bi bi-plus"></i> Dodaj
+        </button>
+    </form>
+</div>
+ 
+<table class="admin-tabela">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nazwa</th>
+            <th>Liczba ogłoszeń</th>
+            <th>Akcje</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var k in Model)
+        {
+            <tr>
+                <td>@k.Id</td>
+                <td><strong>@k.Nazwa</strong></td>
+                <td>@k.Ogloszenia.Count</td>
+                <td>
+                    @if (k.Ogloszenia.Count == 0)
+                    {
+                        <form asp-action="UsunKategorie" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@k.Id" />
+                            <button type="submit" class="button-czerwony" style="padding: 6px 12px; font-size: 13px;"
+                                    onclick="return confirm('Na pewno usunąć kategorię @k.Nazwa?');">
+                                <i class="bi bi-trash"></i> Usuń
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <span style="color: var(--kolor-tekst-szary); font-size: 13px;">
+                            Ma ogłoszenia — nie można usunąć
+                        </span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
