@@ -1,18 +1,18 @@
-@model List<Ogloszenie>
+Ôªø@model List<Ogloszenie>
 @{
-    ViewData["Title"] = "Moje og≥oszenia";
+    ViewData["Title"] = "Moje og≈Çoszenia";
     var ikonyKategorii = new Dictionary<string, string>
     {
         { "Matematyka", "bi-calculator" },
         { "Fizyka", "bi-lightning-charge" },
-        { "JÍzyk angielski", "bi-translate" },
-        { "JÍzyk polski", "bi-book" },
+        { "Jƒôzyk angielski", "bi-translate" },
+        { "Jƒôzyk polski", "bi-book" },
         { "Informatyka", "bi-laptop" },
         { "Chemia", "bi-droplet-half" }
     };
 }
 
-<h1><i class="bi bi-collection"></i> Moje og≥oszenia</h1>
+<h1><i class="bi bi-collection"></i> Moje og≈Çoszenia</h1>
 
 <p><a asp-action="Dodaj" class="button"><i class="bi bi-plus-circle"></i> Dodaj nowe</a></p>
 
@@ -20,7 +20,7 @@
 {
     <div class="info-pasek">
         <i class="bi bi-info-circle"></i>
-        Nie masz jeszcze øadnych og≥oszeÒ. Dodaj pierwsze klikajπc przycisk powyøej.
+        Nie masz jeszcze ≈ºadnych og≈Çosze≈Ñ. Dodaj pierwsze klikajƒÖc przycisk powy≈ºej.
     </div>
 }
 else
@@ -49,7 +49,7 @@ else
                         <a asp-action="Szczegoly" asp-route-id="@o.Id">@o.Tytul</a>
                     </h3>
                     <div class="karta-info"><i class="bi bi-geo-alt"></i> @o.Miasto</div>
-                    <div class="karta-cena">@o.Cena z≥ / godz.</div>
+                    <div class="karta-cena">@o.Cena z≈Ç / godz.</div>
                     <p class="data">Dodano: @o.DataDodania.ToString("dd.MM.yyyy")</p>
 
                     <div class="przyciski">
@@ -60,8 +60,8 @@ else
                         <form asp-action="Usun" method="post" style="display:inline;">
                             <input type="hidden" name="id" value="@o.Id" />
                             <button type="submit" class="button-czerwony"
-                                    onclick="return confirm('Na pewno usunπÊ?');">
-                                <i class="bi bi-trash"></i> UsuÒ
+                                    onclick="return confirm('Na pewno usunƒÖƒá?');">
+                                <i class="bi bi-trash"></i> Usu≈Ñ
                             </button>
                         </form>
                     </div>

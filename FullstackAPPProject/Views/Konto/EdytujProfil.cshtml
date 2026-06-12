@@ -46,12 +46,12 @@
         </div>
     </form>
  
-    <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--kolor-obramowanie);">
-        <p style="color: var(--kolor-tekst-szary); font-size: 14px; margin-bottom: 8px;">
-            <i class="bi bi-exclamation-triangle"></i> Strefa niebezpieczna
-        </p>
-        <a asp-action="UsunKonto" class="button-czerwony" style="font-size: 14px; padding: 8px 16px;">
-            <i class="bi bi-trash"></i> Usuñ konto
-        </a>
-    </div>
+    @if (!User.IsInRole("Admin"))
+    {
+        <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--kolor-obramowanie);">
+            <a asp-action="UsunKonto" class="button-czerwony" style="font-size: 14px; padding: 8px 16px;">
+                <i class="bi bi-trash"></i> Usuñ konto
+            </a>
+        </div>
+    }
 </div>

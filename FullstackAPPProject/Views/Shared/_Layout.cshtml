@@ -21,39 +21,82 @@
             }
         }
     }
-
     <header>
         <nav>
-            <a class="logo" asp-controller="Home" asp-action="Index"><i class="bi bi-mortarboard-fill"></i> KorkiPL</a>
+            <a class="logo" asp-controller="Home" asp-action="Index"><i class="bi bi-book"></i> KorkiPL</a>
 
+            <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+                <i class="bi bi-list"></i>
+            </button>
 
-
-            <ul>
-                <li><a asp-controller="Home" asp-action="Index">Strona główna</a></li>
-                <li><a asp-controller="Ogloszenia" asp-action="Index">Ogłoszenia</a></li>
+            <ul id="navMenu">
+                <li><a asp-controller="Home" asp-action="Index"><i class="bi bi-house"></i> Strona główna</a></li>
+                <li><a asp-controller="Ogloszenia" asp-action="Index"><i class="bi bi-search"></i> Ogłoszenia</a></li>
 
                 @if (User.Identity!.IsAuthenticated)
                 {
-                    <li><a asp-controller="Ogloszenia" asp-action="Moje">Moje ogłoszenia</a></li>
-                    <li><a asp-controller="Ogloszenia" asp-action="Dodaj">+ Dodaj</a></li>
-                    <li class="user-info">Zalogowany: @User.Identity.Name</li>
-                    <li><a asp-controller="Konto" asp-action="Wyloguj">Wyloguj</a></li>
+                    @* --- KOREPETYTOR: widzi swoje ogłoszenia i może dodawać --- *@
+                    @if (User.IsInRole("Korepetytor"))
+                    {
+                        <li><a asp-controller="Ogloszenia" asp-action="Moje"><i class="bi bi-collection"></i> Moje ogłoszenia</a></li>
+                        <li><a asp-controller="Ogloszenia" asp-action="Dodaj"><i class="bi bi-plus-circle"></i> Dodaj</a></li>
+                    }
+
+                    @* --- PANEL: dla każdej roli --- *@
+                    <li><a asp-controller="Konto" asp-action="Panel"><i class="bi bi-speedometer2"></i> Panel</a></li>
+
+                    @* --- WIADOMOŚCI z licznikiem --- *@
+                    <li>
+                        <a asp-controller="Wiadomosci" asp-action="Index">
+                            <i class="bi bi-chat-dots"></i> Wiadomości
+                            @if (nieprzeczytaneWiadomosci > 0)
+                            {
+                                <span class="nav-licznik">@nieprzeczytaneWiadomosci</span>
+                            }
+                        </a>
+                    </li>
+
+                    @* --- DROPDOWN UŻYTKOWNIKA --- *@
+                    <li class="user-dropdown">
+                        <button class="user-dropdown-btn" id="userDropdownBtn">
+                            <i class="bi bi-person-circle"></i> @User.Identity.Name
+                            <i class="bi bi-chevron-down" style="font-size: 10px;"></i>
+                        </button>
+                        <div class="user-dropdown-menu" id="userDropdownMenu">
+                            <a asp-controller="Konto" asp-action="Profil" asp-route-id="@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value">
+                                <i class="bi bi-person"></i> Mój profil
+                            </a>
+                            <a asp-controller="Konto" asp-action="EdytujProfil">
+                                <i class="bi bi-pencil-square"></i> Edytuj profil
+                            </a>
+                            <a asp-controller="Konto" asp-action="Panel">
+                                <i class="bi bi-speedometer2"></i> Panel
+                            </a>
+                            <div class="user-dropdown-divider"></div>
+                            <a asp-controller="Konto" asp-action="Wyloguj" style="color: #dc2626;">
+                                <i class="bi bi-box-arrow-right"></i> Wyloguj
+                            </a>
+                        </div>
+                    </li>
                 }
                 else
                 {
-                    <li><a asp-controller="Konto" asp-action="Logowanie">Zaloguj</a></li>
-                    <li><a asp-controller="Konto" asp-action="Rejestracja">Zarejestruj</a></li>
+                    <li><a asp-controller="Konto" asp-action="Logowanie"><i class="bi bi-box-arrow-in-right"></i> Zaloguj</a></li>
+                    <li><a asp-controller="Konto" asp-action="Rejestracja"><i class="bi bi-person-plus"></i> Zarejestruj</a></li>
                 }
             </ul>
         </nav>
     </header>
+  
+
 
     <main>
         @RenderBody()
     </main>
 
     <footer>
-        <p>&copy; @DateTime.Now.Year KorkiPL</p>
+        <p>&copy; @DateTime.Now.Year KorkiPL &mdash; Platforma korepetycji</p>
     </footer>
+    <script src="~/js/site.js" asp-append-version="true"></script>
 </body>
 </html>

@@ -17,13 +17,14 @@ namespace FullstackAPPProject.Data
 
             db.Kategorie.AddRange(matematyka, fizyka, angielski, polski, informatyka, chemia);
             db.SaveChanges();
-          
-            var admin = new Uzytkownik { Nazwa = "admin", Haslo = ZahashujHaslo("admin"), Rola = "Admin" };
-            var anna = new Uzytkownik { Nazwa = "anna", Haslo = ZahashujHaslo("haslo") };
-            var piotr = new Uzytkownik { Nazwa = "piotr", Haslo = ZahashujHaslo("haslo") };
-            var kasia = new Uzytkownik { Nazwa = "kasia", Haslo = ZahashujHaslo("haslo"), Rola = "Uczen"};
 
-            db.Uzytkownicy.AddRange(anna, piotr, kasia);
+         
+            var admin = new Uzytkownik { Nazwa = "admin", Haslo = ZahashujHaslo("admin"), Rola = "Admin" };
+            var anna = new Uzytkownik { Nazwa = "anna", Haslo = ZahashujHaslo("haslo"), Rola = "Korepetytor" };
+            var piotr = new Uzytkownik { Nazwa = "piotr", Haslo = ZahashujHaslo("haslo"), Rola = "Korepetytor" };
+            var kasia = new Uzytkownik { Nazwa = "kasia", Haslo = ZahashujHaslo("haslo"), Rola = "Uczen" };
+
+            db.Uzytkownicy.AddRange(admin, anna, piotr, kasia);
             db.SaveChanges();
 
             db.Ogloszenia.AddRange(
@@ -93,15 +94,13 @@ namespace FullstackAPPProject.Data
                     UzytkownikId = piotr.Id,
                     DataDodania = DateTime.Now.AddHours(-20)
                 }
-
             );
             db.SaveChanges();
-            
+
             var ogloszenieMat = db.Ogloszenia.First(o => o.UzytkownikId == anna.Id && o.KategoriaId == matematyka.Id);
             var ogloszeniePython = db.Ogloszenia.First(o => o.UzytkownikId == piotr.Id && o.KategoriaId == informatyka.Id);
 
             db.Wiadomosci.AddRange(
-                
                 new Wiadomosc
                 {
                     Tresc = "Cześć! Chciałabym się umówić na korki z matmy. Jakie masz wolne terminy?",
@@ -120,7 +119,6 @@ namespace FullstackAPPProject.Data
                     DataWyslania = DateTime.Now.AddHours(-1),
                     Przeczytana = false
                 },
-                
                 new Wiadomosc
                 {
                     Tresc = "Dzień dobry, czy uczy Pan też zaawansowanego Pythona (Django, REST)?",
@@ -133,7 +131,6 @@ namespace FullstackAPPProject.Data
             );
             db.SaveChanges();
 
-            
             db.Opinie.AddRange(
                 new Opinia
                 {
@@ -153,7 +150,6 @@ namespace FullstackAPPProject.Data
                 }
             );
             db.SaveChanges();
-
         }
 
         public static string ZahashujHaslo(string haslo)
@@ -162,6 +158,6 @@ namespace FullstackAPPProject.Data
             var hash = System.Security.Cryptography.SHA256.HashData(bajty);
             return Convert.ToBase64String(hash);
         }
-
     }
 }
+

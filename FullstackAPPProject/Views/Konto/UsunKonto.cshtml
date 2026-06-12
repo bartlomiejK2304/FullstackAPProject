@@ -1,19 +1,20 @@
+@{
     ViewData["Title"] = "Usuń konto";
     var nazwaUzytkownika = User.Identity!.Name;
 }
- 
+
 <div class="auth-karta" style="max-width: 520px;">
     <h1 style="color: var(--kolor-blad);"><i class="bi bi-exclamation-triangle"></i> Usuń konto</h1>
     <p class="auth-podtytul">
         Ta operacja jest <strong>nieodwracalna</strong>. Zostaną usunięte wszystkie Twoje dane:
         ogłoszenia, wiadomości, opinie i profil.
     </p>
- 
+
     @if (ViewBag.Blad != null)
     {
         <div class="blad"><i class="bi bi-exclamation-triangle"></i> @ViewBag.Blad</div>
     }
- 
+
     <form method="post" asp-action="UsunKonto" id="formUsunKonto">
         <div class="pole">
             <label><i class="bi bi-chat-left-text"></i> Dlaczego chcesz usunąć konto?</label>
@@ -23,7 +24,7 @@
                 Min. 5 znaków. Ta informacja pomoże nam ulepszać serwis.
             </small>
         </div>
- 
+
         <div class="pole" style="margin-top: 20px; padding: 16px; background: var(--kolor-blad-tlo); border-radius: var(--zaokraglenie-male); border: 1px solid #fecaca;">
             <label style="color: var(--kolor-blad);">
                 <i class="bi bi-shield-exclamation"></i> Aby potwierdzić, wpisz: <strong>USUN @nazwaUzytkownika</strong>
@@ -36,7 +37,7 @@
                 Musisz wpisać dokładnie: USUN @nazwaUzytkownika
             </small>
         </div>
- 
+
         <div class="przyciski" style="flex-direction: column; margin-top: 20px;">
             <button type="submit" id="btnUsun" class="button-czerwony"
                     style="width: 100%; justify-content: center; opacity: 0.5; pointer-events: none;">
@@ -48,14 +49,15 @@
         </div>
     </form>
 </div>
- 
+
 <script>
-   
+    // Przycisk "Usuń" jest zablokowany dopóki użytkownik nie wpisze poprawnego tekstu.
+    // Porównujemy zawartość inputa z wymaganym hasłem "USUN [nazwa]".
     document.addEventListener('DOMContentLoaded', function () {
         var input = document.getElementById('inputPotwierdzenie');
         var btn = document.getElementById('btnUsun');
         var wymaganyTekst = 'USUN @nazwaUzytkownika';
- 
+
         input.addEventListener('input', function () {
             if (input.value.trim() === wymaganyTekst) {
                 btn.style.opacity = '1';
@@ -67,7 +69,8 @@
                 input.style.borderColor = '#dc2626';
             }
         });
- 
+
+        // Dodatkowe zabezpieczenie przy submit
         document.getElementById('formUsunKonto').addEventListener('submit', function (e) {
             if (input.value.trim() !== wymaganyTekst) {
                 e.preventDefault();
