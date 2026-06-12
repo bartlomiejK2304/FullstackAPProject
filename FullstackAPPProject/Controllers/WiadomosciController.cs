@@ -7,7 +7,7 @@ using System.Security.Claims;
 
 namespace FullstackAPPProject.Controllers
 {
-    [Authorize] 
+    [Authorize]
     public class WiadomosciController : Controller
     {
         private readonly AppDbContext _db;
@@ -17,12 +17,10 @@ namespace FullstackAPPProject.Controllers
             _db = db;
         }
 
-        // Lista wiadomosci z uzytkownikiem
         public IActionResult Index()
         {
             int mojeId = PobierzIdZalogowanego();
 
-            // œci¹gniêcie wiadomosci 
             var moje = _db.Wiadomosci
                 .Include(w => w.Ogloszenie)
                     .ThenInclude(o => o!.Kategoria)
@@ -54,7 +52,6 @@ namespace FullstackAPPProject.Controllers
             return View(konwersacje);
         }
 
-        // Widok jednej konwersacji z odpowiedziami
         public IActionResult Konwersacja(int ogloszenieId, int innyId)
         {
             int mojeId = PobierzIdZalogowanego();
@@ -75,7 +72,6 @@ namespace FullstackAPPProject.Controllers
                 .OrderBy(w => w.DataWyslania)
                 .ToList();
 
-            // Oznaczenie przeczytanych wiadomoœci
             foreach (var w in wiadomosci)
             {
                 if (w.OdbiorcaId == mojeId && !w.Przeczytana)
@@ -92,7 +88,6 @@ namespace FullstackAPPProject.Controllers
             return View(wiadomosci);
         }
 
-        // Wys³anie nowej wiadomoœci 
         [HttpPost]
         public IActionResult Wyslij(int ogloszenieId, int odbiorcaId, string tresc)
         {
@@ -140,7 +135,6 @@ namespace FullstackAPPProject.Controllers
         }
     }
 
-    // Klasa pomocnicza do wyœwietlania listy konwersacji w widoku
     public class KonwersacjaPodglad
     {
         public int OgloszenieId { get; set; }
