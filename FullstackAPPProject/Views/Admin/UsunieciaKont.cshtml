@@ -1,0 +1,40 @@
+@model List<UsuniecieKonta>
+@{
+    ViewData["Title"] = "Historia usuniętych kont";
+}
+ 
+<p><a asp-action="Index"><i class="bi bi-arrow-left"></i> Wróć do panelu admina</a></p>
+ 
+<h1><i class="bi bi-person-x"></i> Usunięte konta (@Model.Count)</h1>
+ 
+@if (Model.Count == 0)
+{
+    <div class="info-pasek">
+        <i class="bi bi-check-circle"></i>
+        Żaden użytkownik nie usunął jeszcze swojego konta.
+    </div>
+}
+else
+{
+    <table class="admin-tabela">
+        <thead>
+            <tr>
+                <th>Użytkownik</th>
+                <th>Rola</th>
+                <th>Powód usunięcia</th>
+                <th>Data</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var u in Model)
+            {
+                <tr>
+                    <td><strong>@u.NazwaUzytkownika</strong></td>
+                    <td><span class="badge-rola">@u.Rola</span></td>
+                    <td style="max-width: 400px; white-space: pre-wrap;">@u.Powod</td>
+                    <td>@u.DataUsuniecia.ToString("dd.MM.yyyy HH:mm")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

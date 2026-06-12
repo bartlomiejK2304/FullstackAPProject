@@ -1,0 +1,55 @@
+@model List<Ogloszenie>
+@{
+    ViewData["Title"] = "Zarządzanie ogłoszeniami";
+}
+ 
+<p><a asp-action="Index"><i class="bi bi-arrow-left"></i> Wróć do panelu admina</a></p>
+ 
+<h1><i class="bi bi-collection"></i> Wszystkie ogłoszenia (@Model.Count)</h1>
+ 
+@if (TempData["Sukces"] != null)
+{
+    <div class="info-pasek" style="background: #dcfce7; border-color: #86efac; color: #166534;">
+        <i class="bi bi-check-circle"></i> @TempData["Sukces"]
+    </div>
+}
+ 
+<table class="admin-tabela">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tytuł</th>
+            <th>Kategoria</th>
+            <th>Autor</th>
+            <th>Cena</th>
+            <th>Data</th>
+            <th>Akcje</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var o in Model)
+        {
+            <tr>
+                <td>@o.Id</td>
+                <td>
+                    <a asp-controller="Ogloszenia" asp-action="Szczegoly" asp-route-id="@o.Id">
+                        @(o.Tytul.Length > 40 ? o.Tytul.Substring(0, 40) + "..." : o.Tytul)
+                    </a>
+                </td>
+                <td>@o.Kategoria?.Nazwa</td>
+                <td>@o.Uzytkownik?.Nazwa</td>
+                <td>@o.Cena zł</td>
+                <td>@o.DataDodania.ToString("dd.MM.yyyy")</td>
+                <td>
+                    <form asp-action="UsunOgloszenie" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@o.Id" />
+                        <button type="submit" class="button-czerwony" style="padding: 6px 12px; font-size: 13px;"
+                                onclick="return confirm('Na pewno usunąć ogłoszenie?');">
+                            <i class="bi bi-trash"></i> Usuń
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
