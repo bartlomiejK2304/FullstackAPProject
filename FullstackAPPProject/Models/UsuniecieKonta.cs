@@ -1,4 +1,7 @@
+using Microsoft.AspNetCore.Mvc;
+
 using System.ComponentModel.DataAnnotations;
+
 namespace FullstackAPPProject.Models;
 public class UsuniecieKonta
 {
@@ -19,3 +22,5 @@ public class UsuniecieKonta
 
     public DateTime DataUsuniecia { get; set; } = DateTime.Now;
 }
+
+
