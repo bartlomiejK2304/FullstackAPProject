@@ -12,18 +12,14 @@ namespace FullstackAPPProject.Data
         public DbSet<Ogloszenie> Ogloszenia { get; set; }
         public DbSet<Wiadomosc> Wiadomosci { get; set; }
         public DbSet<Opinia> Opinie { get; set; }
-
-        // Konfiguracja relacji - bez tego EF próbowałby zrobić kaskadę
-        // na obu relacjach Wiadomosc->Uzytkownik i Opinia->Uzytkownik
-        // i wywaliłby się przy SQLite (multiple cascade paths).
+        public DbSet<UsuniecieKonta> UsunieciaKont { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //opisze jedna zeby bylo wiadomo ocb takie pitupitu jak na bazach danych
             modelBuilder.Entity<Wiadomosc>()
-                .HasOne(w => w.Nadawca) //wiadomosc ma jednego nadawce
-                .WithMany() //nadawca moze miec wele wiadomosci
-                .HasForeignKey(w => w.NadawcaId) //klucz obcy to Id nadawcy
-                .OnDelete(DeleteBehavior.Restrict); //to jest blokada ze nie usuwamy uzytkownika jesli ma jakies wiadomosci wszystkie pozostałe obiekty to jest to samo i dziala tak samo same kod : )
+                .HasOne(w => w.Nadawca) 
+                .WithMany() 
+                .HasForeignKey(w => w.NadawcaId) 
+                .OnDelete(DeleteBehavior.Restrict); 
 
             modelBuilder.Entity<Wiadomosc>()
                 .HasOne(w => w.Odbiorca)

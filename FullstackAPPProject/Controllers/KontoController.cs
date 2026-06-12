@@ -82,28 +82,29 @@ public class KontoController : Controller
         return RedirectToAction("Panel");
     }
 
-    // inny widok dla korepetytora, inny dla ucznia
     [Authorize]
     public IActionResult Panel()
     {
+        if (User.IsInRole("Admin"))
+        {
+            return RedirectToAction("Index", "Admin");
+        }
+
         int idUzytkownika = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         var uzytkownik = _db.Uzytkownicy.Find(idUzytkownika);
         if (uzytkownik == null) return RedirectToAction("Logowanie");
 
-        // Licznik nieprzeczytanych wiadomości 
         ViewBag.NieprzeczytaneWiadomosci = _db.Wiadomosci
             .Count(w => w.OdbiorcaId == idUzytkownika && !w.Przeczytana);
 
         if (uzytkownik.Rola == "Korepetytor")
         {
-           
             var moje = _db.Ogloszenia
                 .Include(o => o.Kategoria)
                 .Where(o => o.UzytkownikId == idUzytkownika)
                 .OrderByDescending(o => o.DataDodania)
                 .ToList();
 
-            // Średnia ocena korepetytora 
             var opinie = _db.Opinie.Where(o => o.KorepetytorId == idUzytkownika).ToList();
             ViewBag.SredniaOcena = opinie.Any() ? opinie.Average(o => o.Ocena) : 0;
             ViewBag.LiczbaOpinii = opinie.Count;
@@ -113,7 +114,6 @@ public class KontoController : Controller
         }
         else
         {
-            
             var polecane = _db.Ogloszenia
                 .Include(o => o.Kategoria)
                 .Include(o => o.Uzytkownik)
@@ -127,7 +127,6 @@ public class KontoController : Controller
         }
     }
 
-    
     public IActionResult Profil(int id)
     {
         var uzytkownik = _db.Uzytkownicy
@@ -137,7 +136,6 @@ public class KontoController : Controller
 
         if (uzytkownik == null) return NotFound();
 
-        // Opinie o korepetytorze
         var opinie = _db.Opinie
             .Include(o => o.Autor)
             .Where(o => o.KorepetytorId == id)
@@ -148,7 +146,6 @@ public class KontoController : Controller
         ViewBag.SredniaOcena = opinie.Any() ? opinie.Average(o => o.Ocena) : 0;
         ViewBag.LiczbaOpinii = opinie.Count;
 
-        // Sprawdzamy czy aktualny użytkownik dodał już opinię, blokujemy duplikaty
         bool juzOcenil = false;
         if (User.Identity!.IsAuthenticated)
         {
@@ -160,7 +157,6 @@ public class KontoController : Controller
         return View(uzytkownik);
     }
 
-    // edycja własnego profilu s
     [Authorize]
     [HttpGet]
     public IActionResult EdytujProfil()
@@ -180,7 +176,6 @@ public class KontoController : Controller
         var uzytkownik = _db.Uzytkownicy.Find(idUzytkownika);
         if (uzytkownik == null) return RedirectToAction("Logowanie");
 
-        
         if (opis != null && opis.Length > 500)
         {
             ViewBag.Blad = "Opis może mieć maksymalnie 500 znaków";
@@ -189,10 +184,8 @@ public class KontoController : Controller
 
         uzytkownik.Opis = opis;
 
-        
         if (zdjecieProfil != null && zdjecieProfil.Length > 0)
         {
-            
             if (!string.IsNullOrEmpty(uzytkownik.ZdjecieProfilPath))
             {
                 var stareFizyczne = Path.Combine(_env.WebRootPath, uzytkownik.ZdjecieProfilPath.TrimStart('/'));
@@ -202,7 +195,6 @@ public class KontoController : Controller
                 }
             }
 
-            
             var folder = Path.Combine(_env.WebRootPath, "uploads");
             if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
 
@@ -223,12 +215,82 @@ public class KontoController : Controller
     }
 
 
+    [Authorize]
+    [HttpGet]
+    public IActionResult UsunKonto()
+    {
+        if (User.IsInRole("Admin"))
+        {
+            TempData["Blad"] = "Administrator nie może usunąć swojego konta.";
+            return RedirectToAction("Panel");
+        }
+
+        return View();
+    }
+
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> UsunKonto(string powod, string potwierdzenie)
+    {
+        if (User.IsInRole("Admin"))
+        {
+            return RedirectToAction("Panel");
+        }
+
+        int idUzytkownika = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var uzytkownik = _db.Uzytkownicy.Find(idUzytkownika);
+        if (uzytkownik == null) return RedirectToAction("Logowanie");
+
+        var wymaganyTekst = "USUN " + uzytkownik.Nazwa;
+        if (string.IsNullOrWhiteSpace(potwierdzenie) || potwierdzenie.Trim() != wymaganyTekst)
+        {
+            ViewBag.Blad = "Niepoprawny tekst potwierdzający. Wpisz dokładnie: " + wymaganyTekst;
+            return View();
+        }
+
+        if (string.IsNullOrWhiteSpace(powod) || powod.Trim().Length < 5)
+        {
+            ViewBag.Blad = "Podaj powód usunięcia konta (min. 5 znaków)";
+            return View();
+        }
+
+        if (powod.Length > 500)
+        {
+            ViewBag.Blad = "Powód może mieć max 500 znaków";
+            return View();
+        }
+
+        var log = new UsuniecieKonta
+        {
+            NazwaUzytkownika = uzytkownik.Nazwa,
+            Rola = uzytkownik.Rola,
+            Powod = powod.Trim(),
+            DataUsuniecia = DateTime.Now
+        };
+        _db.UsunieciaKont.Add(log);
+
+        var wiadomosci = _db.Wiadomosci.Where(w => w.NadawcaId == idUzytkownika || w.OdbiorcaId == idUzytkownika);
+        _db.Wiadomosci.RemoveRange(wiadomosci);
+
+        var opinie = _db.Opinie.Where(o => o.AutorId == idUzytkownika || o.KorepetytorId == idUzytkownika);
+        _db.Opinie.RemoveRange(opinie);
+
+        var ogloszenia = _db.Ogloszenia.Where(o => o.UzytkownikId == idUzytkownika);
+        _db.Ogloszenia.RemoveRange(ogloszenia);
+
+        _db.Uzytkownicy.Remove(uzytkownik);
+        _db.SaveChanges();
+
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        TempData["KontoUsuniete"] = "Twoje konto zostało usunięte. Dziękujemy za korzystanie z KorkiPL.";
+        return RedirectToAction("Logowanie");
+    }
+
     public async Task<IActionResult> Wyloguj()
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         return RedirectToAction("Index", "Home");
     }
-
 
     private async Task Zaloguj(Uzytkownik u)
     {
@@ -241,6 +303,5 @@ public class KontoController : Controller
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var principal = new ClaimsPrincipal(identity);
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-
     }
 }
