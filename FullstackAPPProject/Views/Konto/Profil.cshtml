@@ -5,7 +5,7 @@
     double sredniaOcena = ViewBag.SredniaOcena ?? 0.0;
     int liczbaOpinii = ViewBag.LiczbaOpinii ?? 0;
     bool juzOcenil = ViewBag.JuzOcenil ?? false;
-
+ 
     int mojeId = 0;
     bool jestemZalogowany = User.Identity!.IsAuthenticated;
     if (jestemZalogowany)
@@ -14,7 +14,7 @@
     }
     bool toMojProfil = mojeId == Model.Id;
     bool jestemUczniem = User.IsInRole("Uczen");
-
+ 
     var ikonyKategorii = new Dictionary<string, string>
     {
         { "Matematyka", "bi-calculator" },
@@ -25,15 +25,15 @@
         { "Chemia", "bi-droplet-half" }
     };
 }
-
+ 
 <div class="profil-karta">
     <div class="profil-avatar-duzy">
         @{
             var vdProfilAvatar = new ViewDataDictionary(ViewData) { { "Rozmiar", "duzy" } };
         }
-        @await Html.PartialAsync("_Avatar", Model, vdProfilAvatar)
+        @await Html.PartialAsync("partial _Avatar", Model, vdProfilAvatar)
     </div>
-
+ 
     <div class="profil-info">
         <h1 style="margin-top: 0;">@Model.Nazwa</h1>
         <p class="profil-rola">
@@ -46,7 +46,7 @@
                 <span class="badge-rola"><i class="bi bi-backpack"></i> Uczeñ</span>
             }
         </p>
-
+ 
         @if (Model.Rola == "Korepetytor")
         {
             <div style="margin: 12px 0;">
@@ -57,7 +57,7 @@
                         { "Ilosc", liczbaOpinii }
                     };
                 }
-                @await Html.PartialAsync("_Gwiazdki", vdProfilGwiazdki)
+                @await Html.PartialAsync("partial _Gwiazdki", vdProfilGwiazdki)
             </div>
         }
         @if (!string.IsNullOrEmpty(Model.Opis))
@@ -70,7 +70,7 @@
                 Nie masz jeszcze opisu. <a asp-action="EdytujProfil">Dodaj opis</a>, ¿eby uczniowie wiedzieli kim jesteœ.
             </p>
         }
-
+ 
         @if (toMojProfil)
         {
             <div class="przyciski" style="margin-top: 16px;">
@@ -81,7 +81,7 @@
         }
     </div>
 </div>
-
+ 
 @if (Model.Rola == "Korepetytor" && Model.Ogloszenia.Any())
 {
     <h2><i class="bi bi-collection"></i> Og³oszenia @Model.Nazwa (@Model.Ogloszenia.Count)</h2>
@@ -91,7 +91,7 @@
             var ikona = ikonyKategorii.ContainsKey(o.Kategoria?.Nazwa ?? "")
                 ? ikonyKategorii[o.Kategoria!.Nazwa]
                 : "bi-book";
-
+ 
             <div class="karta">
                 @if (!string.IsNullOrEmpty(o.ZdjeciePath))
                 {
@@ -116,28 +116,26 @@
         }
     </div>
 }
-
+ 
 @if (Model.Rola == "Korepetytor")
 {
     <h2 style="margin-top: 40px;"><i class="bi bi-chat-square-quote"></i> Opinie (@liczbaOpinii)</h2>
-
-   
+ 
     @if (jestemZalogowany && !toMojProfil && jestemUczniem && !juzOcenil)
     {
         <div class="opinia-formularz">
             <h3 style="margin-top: 0;">Dodaj swoj¹ opiniê</h3>
-
+ 
             @if (TempData["BladOpinia"] != null)
             {
                 <div class="blad"><i class="bi bi-exclamation-triangle"></i> @TempData["BladOpinia"]</div>
             }
-
+ 
             <form method="post" asp-controller="Opinie" asp-action="Dodaj">
                 <input type="hidden" name="korepetytorId" value="@Model.Id" />
-
+ 
                 <div class="pole">
                     <label>Twoja ocena</label>
-                   
                     <div class="ocena-radio">
                         @for (int i = 5; i >= 1; i--)
                         {
@@ -156,13 +154,13 @@
                         }
                     </div>
                 </div>
-
+ 
                 <div class="pole">
                     <label>Treœæ opinii</label>
                     <textarea name="tresc" rows="3" maxlength="500" required
                               placeholder="Jak oceniasz korepetycje? Co warto powiedzieæ innym uczniom?"></textarea>
                 </div>
-
+ 
                 <button type="submit" class="button">
                     <i class="bi bi-send"></i> Dodaj opiniê
                 </button>
@@ -182,8 +180,7 @@
             <span><a asp-action="Logowanie">Zaloguj siê</a>, ¿eby dodaæ opiniê.</span>
         </div>
     }
-
-    
+ 
     @if (!opinie.Any())
     {
         <p style="color: var(--kolor-tekst-szary);">Brak opinii. B¹dŸ pierwszy!</p>
@@ -199,7 +196,7 @@
                             @{
                                 var vdOpiniaAvatar = new ViewDataDictionary(ViewData) { { "Rozmiar", "maly" } };
                             }
-                            @await Html.PartialAsync("_Avatar", op.Autor, vdOpiniaAvatar)
+                            @await Html.PartialAsync("partial _Avatar", op.Autor, vdOpiniaAvatar)
                             <strong>@op.Autor?.Nazwa</strong>
                         </div>
                         <div class="opinia-ocena">

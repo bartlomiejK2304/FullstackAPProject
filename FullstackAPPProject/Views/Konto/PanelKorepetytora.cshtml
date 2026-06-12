@@ -1,8 +1,8 @@
 @model List<Ogloszenie>
-    @{
+@{
     ViewData["Title"] = "Panel korepetytora";
     var uzytkownik = ViewBag.Uzytkownik as Uzytkownik;
-
+ 
     var ikonyKategorii = new Dictionary<string, string>
     {
         { "Matematyka", "bi-calculator" },
@@ -12,18 +12,16 @@
         { "Informatyka", "bi-laptop" },
         { "Chemia", "bi-droplet-half" }
     };
-
-    // Proste statystyki dla korepetytora
+ 
     int liczbaOgloszen = Model.Count;
     decimal sredniaCena = Model.Count > 0 ? Model.Average(o => o.Cena) : 0;
-    }
-
-    @* Pasek powitalny  *@
-    <div class="panel-header">
-        <div>
-            <h1><i class="bi bi-mortarboard"></i> Witaj, @uzytkownik?.Nazwa!</h1>
-            <p>To jest Twój panel korepetytora. Zarz¹dzaj tu swoimi og³oszeniami.</p>
-            @if ((int)(ViewBag.LiczbaOpinii ?? 0) > 0)
+}
+ 
+<div class="panel-header">
+    <div>
+        <h1><i class="bi bi-mortarboard"></i> Witaj, @uzytkownik?.Nazwa!</h1>
+        <p>To jest Twój panel korepetytora. Zarz¹dzaj tu swoimi og³oszeniami.</p>
+        @if ((int)(ViewBag.LiczbaOpinii ?? 0) > 0)
         {
             <div style="margin-top: 8px;">
                 @{
@@ -33,38 +31,36 @@
                         { "Ilosc", (int)ViewBag.LiczbaOpinii }
                     };
                 }
-                @await Html.PartialAsync("_Gwiazdki", vdGwiazdkiPanel)
+                @await Html.PartialAsync("partial _Gwiazdki", vdGwiazdkiPanel)
             </div>
         }
-        </div>
-        <div class="przyciski">
-            <a asp-controller="Konto" asp-action="EdytujProfil" class="button button-bialy">
-                <i class="bi bi-pencil"></i> Edytuj profil
-            </a>
-            <a asp-controller="Ogloszenia" asp-action="Dodaj" class="button button-bialy">
-                <i class="bi bi-plus-circle"></i> Dodaj og³oszenie
-            </a>
-        </div>
     </div>
-
-    @* Statystyki korepetytora *@
-    <div class="statystyki">
-        <div class="statystyka">
-            <div class="statystyka-liczba">@liczbaOgloszen</div>
-            <div class="statystyka-opis">Twoje og³oszenia</div>
-        </div>
-        <div class="statystyka">
-            <div class="statystyka-liczba">@sredniaCena.ToString("0") z³</div>
-            <div class="statystyka-opis">Œrednia cena za godzinê</div>
-        </div>
-        <div class="statystyka">
-            <div class="statystyka-liczba">@Model.Select(o => o.KategoriaId).Distinct().Count()</div>
-            <div class="statystyka-opis">Ró¿nych przedmiotów</div>
-        </div>
+    <div class="przyciski">
+        <a asp-controller="Konto" asp-action="EdytujProfil" class="button button-bialy">
+            <i class="bi bi-pencil"></i> Edytuj profil
+        </a>
+        <a asp-controller="Ogloszenia" asp-action="Dodaj" class="button button-bialy">
+            <i class="bi bi-plus-circle"></i> Dodaj og³oszenie
+        </a>
     </div>
-
-    @* Skrót do nieprzeczytanych wiadomosci *@
-    @if ((int)(ViewBag.NieprzeczytaneWiadomosci ?? 0) > 0)
+</div>
+ 
+<div class="statystyki">
+    <div class="statystyka">
+        <div class="statystyka-liczba">@liczbaOgloszen</div>
+        <div class="statystyka-opis">Twoje og³oszenia</div>
+    </div>
+    <div class="statystyka">
+        <div class="statystyka-liczba">@sredniaCena.ToString("0") z³</div>
+        <div class="statystyka-opis">Œrednia cena za godzinê</div>
+    </div>
+    <div class="statystyka">
+        <div class="statystyka-liczba">@Model.Select(o => o.KategoriaId).Distinct().Count()</div>
+        <div class="statystyka-opis">Ró¿nych przedmiotów</div>
+    </div>
+</div>
+ 
+@if ((int)(ViewBag.NieprzeczytaneWiadomosci ?? 0) > 0)
 {
     <div class="info-pasek" style="background: #dbeafe; border-color: #93c5fd; color: #1e40af;">
         <i class="bi bi-chat-dots-fill"></i>
@@ -74,10 +70,10 @@
         </span>
     </div>
 }
-
-    <h2><i class="bi bi-collection"></i> Twoje og³oszenia</h2>
-
-    @if (Model.Count == 0)
+ 
+<h2><i class="bi bi-collection"></i> Twoje og³oszenia</h2>
+ 
+@if (Model.Count == 0)
 {
     <div class="info-pasek">
         <i class="bi bi-info-circle"></i>
@@ -92,42 +88,42 @@ else
             var ikona = ikonyKategorii.ContainsKey(o.Kategoria?.Nazwa ?? "")
                 ? ikonyKategorii[o.Kategoria!.Nazwa]
                 : "bi-book";
-
-        <div class="karta">
-            @if (!string.IsNullOrEmpty(o.ZdjeciePath))
+ 
+            <div class="karta">
+                @if (!string.IsNullOrEmpty(o.ZdjeciePath))
                 {
-            <img src="@o.ZdjeciePath" alt="@o.Tytul" class="karta-zdjecie" />
+                    <img src="@o.ZdjeciePath" alt="@o.Tytul" class="karta-zdjecie" />
                 }
                 else
                 {
-            <div class="karta-zdjecie-placeholder">
-                <i class="bi @ikona"></i>
-            </div>
+                    <div class="karta-zdjecie-placeholder">
+                        <i class="bi @ikona"></i>
+                    </div>
                 }
-            <div class="karta-tresc">
-                <span class="karta-kategoria-tag">@o.Kategoria?.Nazwa</span>
-                <h3>
-                    <a asp-controller="Ogloszenia" asp-action="Szczegoly" asp-route-id="@o.Id">@o.Tytul</a>
-                </h3>
-                <div class="karta-info"><i class="bi bi-geo-alt"></i> @o.Miasto</div>
-                <div class="karta-cena">@o.Cena z³ / godz.</div>
-                <p class="data">Dodano: @o.DataDodania.ToString("dd.MM.yyyy")</p>
-
-                <div class="przyciski">
-                    <a asp-controller="Ogloszenia" asp-action="Edytuj" asp-route-id="@o.Id" class="button">
-                        <i class="bi bi-pencil"></i> Edytuj
-                    </a>
-
-                    <form asp-controller="Ogloszenia" asp-action="Usun" method="post" style="display:inline;">
-                        <input type="hidden" name="id" value="@o.Id" />
-                        <button type="submit" class="button-czerwony"
-                                onclick="return confirm('Na pewno usun¹æ?');">
-                            <i class="bi bi-trash"></i> Usuñ
-                        </button>
-                    </form>
+                <div class="karta-tresc">
+                    <span class="karta-kategoria-tag">@o.Kategoria?.Nazwa</span>
+                    <h3>
+                        <a asp-controller="Ogloszenia" asp-action="Szczegoly" asp-route-id="@o.Id">@o.Tytul</a>
+                    </h3>
+                    <div class="karta-info"><i class="bi bi-geo-alt"></i> @o.Miasto</div>
+                    <div class="karta-cena">@o.Cena z³ / godz.</div>
+                    <p class="data">Dodano: @o.DataDodania.ToString("dd.MM.yyyy")</p>
+ 
+                    <div class="przyciski">
+                        <a asp-controller="Ogloszenia" asp-action="Edytuj" asp-route-id="@o.Id" class="button">
+                            <i class="bi bi-pencil"></i> Edytuj
+                        </a>
+ 
+                        <form asp-controller="Ogloszenia" asp-action="Usun" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@o.Id" />
+                            <button type="submit" class="button-czerwony"
+                                    onclick="return confirm('Na pewno usun¹æ?');">
+                                <i class="bi bi-trash"></i> Usuñ
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
         }
     </div>
 }

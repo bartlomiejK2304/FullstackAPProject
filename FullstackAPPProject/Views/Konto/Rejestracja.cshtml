@@ -2,23 +2,23 @@
 @{
     ViewData["Title"] = "Rejestracja";
 }
-
+ 
 <div class="auth-karta">
     <h1><i class="bi bi-person-plus"></i> Rejestracja</h1>
     <p class="auth-podtytul">Za³ó¿ konto ¿eby zacz¹æ</p>
-
+ 
     @if (ViewBag.Blad != null)
     {
         <div class="blad"><i class="bi bi-exclamation-triangle"></i> @ViewBag.Blad</div>
     }
-
+ 
     <form method="post" asp-action="Rejestracja">
         <div class="pole">
             <label asp-for="Nazwa"><i class="bi bi-person"></i> Nazwa u¿ytkownika</label>
             <input asp-for="Nazwa" placeholder="np. jan" />
             <span asp-validation-for="Nazwa" class="blad"></span>
         </div>
-
+ 
         <div class="pole">
             <label asp-for="Haslo"><i class="bi bi-lock"></i> Has³o</label>
             <input asp-for="Haslo" type="password" placeholder="min. 4 znaki" />
@@ -42,12 +42,12 @@
                 Tylko korepetytorzy mog¹ dodawaæ og³oszenia.
             </small>
         </div>
-
+ 
         <button type="submit" class="button" style="width: 100%; justify-content: center;">
             <i class="bi bi-check-circle"></i> Zarejestruj
         </button>
     </form>
-
+ 
     <p class="auth-stopka">
         Masz ju¿ konto? <a asp-action="Logowanie">Zaloguj siê</a>
     </p>

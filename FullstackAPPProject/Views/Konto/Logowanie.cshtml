@@ -1,32 +1,39 @@
 ﻿@{
     ViewData["Title"] = "Logowanie";
 }
-
+ 
 <div class="auth-karta">
     <h1><i class="bi bi-box-arrow-in-right"></i> Logowanie</h1>
     <p class="auth-podtytul">Zaloguj się żeby zarządzać ogłoszeniami</p>
-
+ 
+    @if (TempData["KontoUsuniete"] != null)
+    {
+        <div class="info-pasek" style="background: #dbeafe; border-color: #93c5fd; color: #1e40af;">
+            <i class="bi bi-check-circle"></i> @TempData["KontoUsuniete"]
+        </div>
+    }
+ 
     @if (ViewBag.Blad != null)
     {
         <div class="blad"><i class="bi bi-exclamation-triangle"></i> @ViewBag.Blad</div>
     }
-
+ 
     <form method="post" asp-action="Logowanie">
         <div class="pole">
             <label><i class="bi bi-person"></i> Nazwa użytkownika</label>
             <input type="text" name="nazwa" placeholder="np. anna" />
         </div>
-
+ 
         <div class="pole">
             <label><i class="bi bi-lock"></i> Hasło</label>
             <input type="password" name="haslo" placeholder="Twoje hasło" />
         </div>
-
+ 
         <button type="submit" class="button" style="width: 100%; justify-content: center;">
             <i class="bi bi-box-arrow-in-right"></i> Zaloguj
         </button>
     </form>
-
+ 
     <p class="auth-stopka">
         Nie masz konta? <a asp-action="Rejestracja">Zarejestruj się</a>
     </p>
