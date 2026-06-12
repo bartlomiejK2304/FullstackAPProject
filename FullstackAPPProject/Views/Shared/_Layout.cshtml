@@ -42,8 +42,13 @@
                         <li><a asp-controller="Ogloszenia" asp-action="Dodaj"><i class="bi bi-plus-circle"></i> Dodaj</a></li>
                     }
 
-                    @* --- PANEL: dla każdej roli --- *@
-                    <li><a asp-controller="Konto" asp-action="Panel"><i class="bi bi-speedometer2"></i> Panel</a></li>
+                        @* --- PANEL: dla każdej roli --- *@
+                        @if (!User.IsInRole("Uczen"))
+                        {
+                        <li><a asp-controller="Konto" asp-action="Panel"><i class="bi bi-speedometer2"></i> Panel</a></li>
+                        }
+
+                      
 
                     @* --- WIADOMOŚCI z licznikiem --- *@
                     <li>
@@ -69,9 +74,13 @@
                             <a asp-controller="Konto" asp-action="EdytujProfil">
                                 <i class="bi bi-pencil-square"></i> Edytuj profil
                             </a>
-                            <a asp-controller="Konto" asp-action="Panel">
-                                <i class="bi bi-speedometer2"></i> Panel
-                            </a>
+                            @if (!User.IsInRole("Uczen"))
+                                {
+                                <a asp-controller="Konto" asp-action="Panel">
+                                    <i class="bi bi-speedometer2"></i> Panel
+                                </a>
+                                }
+
                             <div class="user-dropdown-divider"></div>
                             <a asp-controller="Konto" asp-action="Wyloguj" style="color: #dc2626;">
                                 <i class="bi bi-box-arrow-right"></i> Wyloguj
