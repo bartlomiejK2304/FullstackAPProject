@@ -1,9 +1,7 @@
 ﻿@model List<Ogloszenie>
 @{
     ViewData["Title"] = "Strona główna";
-
-    // Mapa nazwy kategorii -> ikonka Bootstrap Icons.
-    // Robione w widoku żeby było prosto i nie ruszać modelu.
+ 
     var ikonyKategorii = new Dictionary<string, string>
     {
         { "Matematyka", "bi-calculator" },
@@ -14,11 +12,10 @@
         { "Chemia", "bi-droplet-half" }
     };
 }
-
-@* ---- HERO / sekcja powitalna ---- *@
+ 
 <section class="hero">
     <h1>Znajdź idealnego korepetytora</h1>
-    <p>Setki korepetytorów online i stacjonarnie. Matematyka, języki, programowanie - wybierz przedmiot i zacznij naukę już dziś.</p>
+    <p>Setki korepetytorów online i stacjonarnie. Matematyka, języki, programowanie — wybierz przedmiot i zacznij naukę już dziś.</p>
     <div class="hero-przyciski">
         <a asp-controller="Ogloszenia" asp-action="Index" class="button button-akcent">
             <i class="bi bi-search"></i> Przeglądaj ogłoszenia
@@ -31,8 +28,7 @@
         }
     </div>
 </section>
-
-@* ---- STATYSTYKI ---- *@
+ 
 <div class="statystyki">
     <div class="statystyka">
         <div class="statystyka-liczba">@ViewBag.LiczbaOgloszen</div>
@@ -47,8 +43,7 @@
         <div class="statystyka-opis">Przedmiotów</div>
     </div>
 </div>
-
-@* ---- KATEGORIE - kafelki z ikonkami ---- *@
+ 
 <h2>Wybierz przedmiot</h2>
 <div class="kategorie-grid">
     @if (ViewBag.Kategorie != null)
@@ -58,7 +53,7 @@
             var ikona = ikonyKategorii.ContainsKey((string)k.Nazwa)
                 ? ikonyKategorii[(string)k.Nazwa]
                 : "bi-book";
-
+ 
             <a asp-controller="Ogloszenia" asp-action="Index" asp-route-kategoriaId="@k.Id" class="kategoria-kafelek">
                 <div class="kategoria-ikona">
                     <i class="bi @ikona"></i>
@@ -69,10 +64,9 @@
         }
     }
 </div>
-
-@* ---- NAJNOWSZE OGŁOSZENIA ---- *@
+ 
 <h2>Najnowsze ogłoszenia</h2>
-
+ 
 @if (Model.Count == 0)
 {
     <p>Brak ogłoszeń.</p>
@@ -85,9 +79,8 @@ else
             var ikona = ikonyKategorii.ContainsKey(o.Kategoria?.Nazwa ?? "")
                 ? ikonyKategorii[o.Kategoria!.Nazwa]
                 : "bi-book";
-
+ 
             <div class="karta">
-                @* Jeśli jest zdjęcie - pokaż je, jeśli nie - placeholder z ikonką *@
                 @if (!string.IsNullOrEmpty(o.ZdjeciePath))
                 {
                     <img src="@o.ZdjeciePath" alt="@o.Tytul" class="karta-zdjecie" />
@@ -110,10 +103,11 @@ else
             </div>
         }
     </div>
-
+ 
     <p style="text-align: center; margin-top: 32px;">
         <a asp-controller="Ogloszenia" asp-action="Index" class="button">
             Zobacz wszystkie ogłoszenia <i class="bi bi-arrow-right"></i>
         </a>
     </p>
 }
+ 
