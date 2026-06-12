@@ -6,7 +6,6 @@
 <h1><i class="bi bi-plus-circle"></i> Dodaj nowe og³oszenie</h1>
  
 <div class="formularz-karta">
-    @* enctype="multipart/form-data" jest WYMAGANE ¿eby wys³aæ plik *@
     <form method="post" asp-action="Dodaj" enctype="multipart/form-data">
         <div class="pole">
             <label asp-for="Tytul"></label>
@@ -16,7 +15,7 @@
  
         <div class="pole">
             <label asp-for="Opis"></label>
-            <textarea asp-for="Opis" rows="6" placeholder="Opisz swoje doœwiadczenie, metody pracy..."></textarea>
+            <textarea asp-for="Opis" rows="6" maxlength="2000" placeholder="Opisz swoje doœwiadczenie, metody pracy..."></textarea>
             <span asp-validation-for="Opis" class="blad"></span>
         </div>
  
@@ -47,8 +46,7 @@
                 <option value="Stacjonarnie">Stacjonarnie</option>
             </select>
         </div>
-
-        @* ---- Pole na zdjêcie ---- *@
+ 
         <div class="pole">
             <label for="zdjecie"><i class="bi bi-image"></i> Zdjêcie (opcjonalne)</label>
             <input type="file" name="zdjecie" id="zdjecie" accept="image/*" />
@@ -56,11 +54,10 @@
                 Mo¿esz dodaæ zdjêcie, które pojawi siê przy og³oszeniu. Dozwolone: jpg, png.
             </small>
         </div>
-
+ 
         <div class="przyciski">
             <button type="submit" class="button"><i class="bi bi-check-circle"></i> Zapisz</button>
             <a asp-action="Index" class="button-szary">Anuluj</a>
         </div>
     </form>
 </div>
-

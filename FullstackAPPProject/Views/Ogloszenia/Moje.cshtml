@@ -1,72 +1,139 @@
-@model List<Ogloszenie>
+﻿@model Ogloszenie
 @{
-    ViewData["Title"] = "Moje og�oszenia";
+    ViewData["Title"] = Model.Tytul;
+    var idZalogowanego = User.Identity!.IsAuthenticated
+        ? int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value)
+        : 0;
+    bool czyMoje = idZalogowanego == Model.UzytkownikId;
+ 
     var ikonyKategorii = new Dictionary<string, string>
     {
         { "Matematyka", "bi-calculator" },
         { "Fizyka", "bi-lightning-charge" },
-        { "J�zyk angielski", "bi-translate" },
-        { "J�zyk polski", "bi-book" },
+        { "Język angielski", "bi-translate" },
+        { "Język polski", "bi-book" },
         { "Informatyka", "bi-laptop" },
         { "Chemia", "bi-droplet-half" }
     };
+    var ikona = ikonyKategorii.ContainsKey(Model.Kategoria?.Nazwa ?? "")
+        ? ikonyKategorii[Model.Kategoria!.Nazwa]
+        : "bi-book";
 }
-
-<h1><i class="bi bi-collection"></i> Moje og�oszenia</h1>
-
-<p><a asp-action="Dodaj" class="button"><i class="bi bi-plus-circle"></i> Dodaj nowe</a></p>
-
-@if (Model.Count == 0)
-{
-    <div class="info-pasek">
-        <i class="bi bi-info-circle"></i>
-        Nie masz jeszcze �adnych og�osze�. Dodaj pierwsze klikaj�c przycisk powy�ej.
-    </div>
-}
-else
-{
-    <div class="lista">
-        @foreach (var o in Model)
+ 
+<p><a asp-action="Index"><i class="bi bi-arrow-left"></i> Wróć do listy ogłoszeń</a></p>
+ 
+<div class="szczegoly">
+    @if (!string.IsNullOrEmpty(Model.ZdjeciePath))
+    {
+        <img src="@Model.ZdjeciePath" alt="@Model.Tytul" class="szczegoly-zdjecie" />
+    }
+    else
+    {
+        <div class="szczegoly-zdjecie-placeholder">
+            <i class="bi @ikona"></i>
+        </div>
+    }
+ 
+    <div class="szczegoly-tresc">
+        <span class="karta-kategoria-tag">@Model.Kategoria?.Nazwa</span>
+        <h1 style="margin-top: 12px;">@Model.Tytul</h1>
+ 
+        <div class="szczegoly-info-grid">
+            <div class="szczegoly-info-item">
+                <span><i class="bi bi-geo-alt"></i> Miasto</span>
+                <span>@Model.Miasto</span>
+            </div>
+            <div class="szczegoly-info-item">
+                <span><i class="bi bi-laptop"></i> Forma zajęć</span>
+                <span>@Model.Forma</span>
+            </div>
+            <div class="szczegoly-info-item">
+                <span><i class="bi bi-person"></i> Korepetytor</span>
+                <span>
+                    <a asp-controller="Konto" asp-action="Profil" asp-route-id="@Model.UzytkownikId">
+                        @Model.Uzytkownik?.Nazwa
+                    </a>
+                </span>
+            </div>
+            <div class="szczegoly-info-item">
+                <span><i class="bi bi-star"></i> Ocena</span>
+                <span>
+                    @{
+                        var vdSzczGwiazdki = new ViewDataDictionary(ViewData)
+                        {
+                            { "Srednia", (double)(ViewBag.SredniaOcena ?? 0.0) },
+                            { "Ilosc", (int)(ViewBag.LiczbaOpinii ?? 0) }
+                        };
+                    }
+                    @await Html.PartialAsync("partial _Gwiazdki", vdSzczGwiazdki)
+                </span>
+            </div>
+            <div class="szczegoly-info-item">
+                <span><i class="bi bi-calendar"></i> Dodano</span>
+                <span>@Model.DataDodania.ToString("dd.MM.yyyy HH:mm")</span>
+            </div>
+            <div class="szczegoly-info-item">
+                <span><i class="bi bi-cash"></i> Cena za godzinę</span>
+                <span class="szczegoly-cena">@Model.Cena zł</span>
+            </div>
+        </div>
+        <h2><i class="bi bi-card-text"></i> Opis</h2>
+        <p style="white-space: pre-wrap;">@Model.Opis</p>
+ 
+        @if (czyMoje)
         {
-            var ikona = ikonyKategorii.ContainsKey(o.Kategoria?.Nazwa ?? "")
-                ? ikonyKategorii[o.Kategoria!.Nazwa]
-                : "bi-book";
-
-            <div class="karta">
-                @if (!string.IsNullOrEmpty(o.ZdjeciePath))
+            <div class="przyciski">
+                <a asp-action="Edytuj" asp-route-id="@Model.Id" class="button">
+                    <i class="bi bi-pencil"></i> Edytuj
+                </a>
+ 
+                <form asp-action="Usun" method="post" style="display:inline;">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <button type="submit" class="button-czerwony"
+                            onclick="return confirm('Na pewno usunąć to ogłoszenie?');">
+                        <i class="bi bi-trash"></i> Usuń
+                    </button>
+                </form>
+            </div>
+        }
+ 
+        @if (User.Identity!.IsAuthenticated && !czyMoje)
+        {
+            <div class="kontakt-formularz">
+                <h2><i class="bi bi-chat-dots"></i> Napisz do korepetytora</h2>
+ 
+                @if (TempData["WiadomoscBlad"] != null)
                 {
-                    <img src="@o.ZdjeciePath" alt="@o.Tytul" class="karta-zdjecie" />
+                    <div class="blad">@TempData["WiadomoscBlad"]</div>
                 }
-                else
-                {
-                    <div class="karta-zdjecie-placeholder">
-                        <i class="bi @ikona"></i>
+ 
+                <form method="post" asp-controller="Wiadomosci" asp-action="Wyslij">
+                    <input type="hidden" name="ogloszenieId" value="@Model.Id" />
+                    <input type="hidden" name="odbiorcaId" value="@Model.UzytkownikId" />
+ 
+                    <div class="pole">
+                        <label>Twoja wiadomość</label>
+                        <textarea name="tresc" rows="4" required maxlength="1000"
+                                  placeholder="Cześć! Chciałbym się dowiedzieć więcej o ogłoszeniu..."></textarea>
                     </div>
-                }
-                <div class="karta-tresc">
-                    <span class="karta-kategoria-tag">@o.Kategoria?.Nazwa</span>
-                    <h3>
-                        <a asp-action="Szczegoly" asp-route-id="@o.Id">@o.Tytul</a>
-                    </h3>
-                    <div class="karta-info"><i class="bi bi-geo-alt"></i> @o.Miasto</div>
-                    <div class="karta-cena">@o.Cena z� / godz.</div>
-                    <p class="data">Dodano: @o.DataDodania.ToString("dd.MM.yyyy")</p>
-
-                    <div class="przyciski">
-                        <a asp-action="Edytuj" asp-route-id="@o.Id" class="button">
-                            <i class="bi bi-pencil"></i> Edytuj
-                        </a>
-
-                        <form asp-action="Usun" method="post" style="display:inline;">
-                            <input type="hidden" name="id" value="@o.Id" />
-                            <button type="submit" class="button-czerwony"
-                                    onclick="return confirm('Na pewno usun��?');">
-                                <i class="bi bi-trash"></i> Usu�
-                            </button>
-                        </form>
-                    </div>
-                </div>
+ 
+                    <button type="submit" class="button">
+                        <i class="bi bi-send"></i> Wyślij wiadomość
+                    </button>
+                </form>
+            </div>
+        }
+        else if (!User.Identity.IsAuthenticated)
+        {
+            <div class="info-pasek" style="margin-top: 24px;">
+                <i class="bi bi-info-circle"></i>
+                <span>
+                    <a asp-controller="Konto" asp-action="Logowanie">Zaloguj się</a>,
+                    żeby napisać wiadomość do korepetytora.
+                </span>
             </div>
         }
     </div>
-}
+</div>
+ 
+ 

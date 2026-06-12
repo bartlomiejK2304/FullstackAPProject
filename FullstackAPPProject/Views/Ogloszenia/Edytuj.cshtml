@@ -1,13 +1,12 @@
-@model Ogloszenie
+ï»¿@model Ogloszenie
 @{
-    ViewData["Title"] = "Edytuj og³oszenie";
+    ViewData["Title"] = "Edytuj ogÅ‚oszenie";
 }
  
-<h1><i class="bi bi-pencil"></i> Edytuj og³oszenie</h1>
+<h1><i class="bi bi-pencil"></i> Edytuj ogÅ‚oszenie</h1>
  
 <div class="formularz-karta">
     <form method="post" asp-action="Edytuj" enctype="multipart/form-data">
-        @* Ukryte id - ¿eby kontroler wiedzia³ co edytuje *@
         <input type="hidden" asp-for="Id" />
         <input type="hidden" asp-for="ZdjeciePath" />
  
@@ -19,7 +18,7 @@
  
         <div class="pole">
             <label asp-for="Opis"></label>
-            <textarea asp-for="Opis" rows="6"></textarea>
+            <textarea asp-for="Opis" rows="6" maxlength="2000"></textarea>
             <span asp-validation-for="Opis" class="blad"></span>
         </div>
  
@@ -28,19 +27,19 @@
             <select asp-for="KategoriaId" asp-items="ViewBag.Kategorie"></select>
             <span asp-validation-for="KategoriaId" class="blad"></span>
         </div>
-
+ 
         <div class="pole">
             <label asp-for="Cena"></label>
             <input asp-for="Cena" type="number" step="0.01" />
             <span asp-validation-for="Cena" class="blad"></span>
         </div>
-
+ 
         <div class="pole">
             <label asp-for="Miasto"></label>
             <input asp-for="Miasto" />
             <span asp-validation-for="Miasto" class="blad"></span>
         </div>
-
+ 
         <div class="pole">
             <label asp-for="Forma"></label>
             <select asp-for="Forma">
@@ -48,26 +47,27 @@
                 <option value="Stacjonarnie">Stacjonarnie</option>
             </select>
         </div>
-
-        @* ---- Aktualne zdjêcie + mo¿liwoœæ zmiany ---- *@
+ 
         <div class="pole">
-            <label><i class="bi bi-image"></i> Zdjêcie</label>
+            <label><i class="bi bi-image"></i> ZdjÄ™cie</label>
             @if (!string.IsNullOrEmpty(Model.ZdjeciePath))
             {
                 <div style="margin-bottom: 8px;">
-                    <img src="@Model.ZdjeciePath" alt="Aktualne zdjêcie"
+                    <img src="@Model.ZdjeciePath" alt="Aktualne zdjÄ™cie"
                          style="max-width: 200px; border-radius: var(--zaokraglenie-male); border: 1px solid var(--kolor-obramowanie);" />
                 </div>
             }
             <input type="file" name="zdjecie" accept="image/*" />
             <small style="color: var(--kolor-tekst-szary); font-size: 13px;">
-                Wybierz nowy plik ¿eby zamieniæ zdjêcie. Zostaw puste ¿eby zostawiæ aktualne.
+                Wybierz nowy plik Å¼eby zamieniÄ‡ zdjÄ™cie. Zostaw puste Å¼eby zostawiÄ‡ aktualne.
             </small>
         </div>
-
+ 
         <div class="przyciski">
             <button type="submit" class="button"><i class="bi bi-check-circle"></i> Zapisz zmiany</button>
             <a asp-action="Szczegoly" asp-route-id="@Model.Id" class="button-szary">Anuluj</a>
         </div>
     </form>
 </div>
+ 
+â€ƒ
