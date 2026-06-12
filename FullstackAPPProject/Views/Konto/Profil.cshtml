@@ -64,7 +64,7 @@
         {
             <p style="white-space: pre-wrap; margin-top: 16px;">@Model.Opis</p>
         }
-        else if (toMojProfil)
+        else if (toMojProfil && !User.IsInRole("Uczen"))
         {
             <p style="color: var(--kolor-tekst-szary); font-style: italic;">
                 Nie masz jeszcze opisu. <a asp-action="EdytujProfil">Dodaj opis</a>, ¿eby uczniowie wiedzieli kim jesteœ.

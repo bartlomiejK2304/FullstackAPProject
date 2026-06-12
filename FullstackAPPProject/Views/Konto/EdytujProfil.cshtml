@@ -29,14 +29,17 @@
             </small>
         </div>
  
-        <div class="pole">
-            <label for="opis">O mnie</label>
-            <textarea name="opis" id="opis" rows="5" maxlength="500"
-                      placeholder="Napisz parê s³ów o sobie - doœwiadczenie, podejœcie do uczniów, hobby...">@Model.Opis</textarea>
-            <small style="color: var(--kolor-tekst-szary); font-size: 13px;">
-                Max 500 znaków. Pojawi siê na Twoim publicznym profilu.
-            </small>
-        </div>
+        @if (!User.IsInRole("Uczen"))
+        {
+            <div class="pole">
+                <label for="opis">O mnie</label>
+                <textarea name="opis" id="opis" rows="5" maxlength="500"
+                          placeholder="Napisz parê s³ów o sobie - doœwiadczenie, podejœcie do uczniów, hobby...">@Model.Opis</textarea>
+                <small style="color: var(--kolor-tekst-szary); font-size: 13px;">
+                    Max 500 znaków. Pojawi siê na Twoim publicznym profilu.
+                </small>
+            </div>
+        }
  
         <div class="przyciski">
             <button type="submit" class="button">
