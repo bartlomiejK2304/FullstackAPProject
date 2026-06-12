@@ -1,9 +1,9 @@
 @model List<Ogloszenie>
-    @{
+@{
     ViewData["Title"] = "Panel ucznia";
     var uzytkownik = ViewBag.Uzytkownik as Uzytkownik;
     var kategorie = ViewBag.Kategorie as List<Kategoria>;
-
+ 
     var ikonyKategorii = new Dictionary<string, string>
     {
         { "Matematyka", "bi-calculator" },
@@ -13,26 +13,24 @@
         { "Informatyka", "bi-laptop" },
         { "Chemia", "bi-droplet-half" }
     };
-    }
-
-    @* ---- Pasek powitalny ---- *@
-    <div class="panel-header">
-        <div>
-            <h1><i class="bi bi-backpack"></i> Witaj, @uzytkownik?.Nazwa!</h1>
-            <p>ZnajdŸ idealnego korepetytora i zacznij naukê. Powodzenia!</p>
-        </div>
-        <div class="przyciski">
-            <a asp-controller="Konto" asp-action="EdytujProfil" class="button button-bialy">
-                <i class="bi bi-pencil"></i> Mój profil
-            </a>
-            <a asp-controller="Ogloszenia" asp-action="Index" class="button button-bialy">
-                <i class="bi bi-search"></i> Przegl¹daj
-            </a>
-        </div>
+}
+ 
+<div class="panel-header">
+    <div>
+        <h1><i class="bi bi-backpack"></i> Witaj, @uzytkownik?.Nazwa!</h1>
+        <p>ZnajdŸ idealnego korepetytora i zacznij naukê. Powodzenia!</p>
     </div>
-
-    @* Skrót do wiadomoœci jeœli s¹ nieprzeczytane *@
-    @if ((int)(ViewBag.NieprzeczytaneWiadomosci ?? 0) > 0)
+    <div class="przyciski">
+        <a asp-controller="Konto" asp-action="EdytujProfil" class="button button-bialy">
+            <i class="bi bi-pencil"></i> Mój profil
+        </a>
+        <a asp-controller="Ogloszenia" asp-action="Index" class="button button-bialy">
+            <i class="bi bi-search"></i> Przegl¹daj
+        </a>
+    </div>
+</div>
+ 
+@if ((int)(ViewBag.NieprzeczytaneWiadomosci ?? 0) > 0)
 {
     <div class="info-pasek" style="background: #dbeafe; border-color: #93c5fd; color: #1e40af;">
         <i class="bi bi-chat-dots-fill"></i>
@@ -42,31 +40,29 @@
         </span>
     </div>
 }
-
-    @* ---- Skrót - kategorie do wyboru ---- *@
-    <h2><i class="bi bi-grid"></i> Wybierz przedmiot</h2>
-    <div class="kategorie-grid">
-        @if (kategorie != null)
-        {
+ 
+<h2><i class="bi bi-grid"></i> Wybierz przedmiot</h2>
+<div class="kategorie-grid">
+    @if (kategorie != null)
+    {
         foreach (var k in kategorie)
-            {
-                var ikona = ikonyKategorii.ContainsKey(k.Nazwa) ? ikonyKategorii[k.Nazwa] : "bi-book";
-
-        <a asp-controller="Ogloszenia" asp-action="Index" asp-route-kategoriaId="@k.Id" class="kategoria-kafelek">
-            <div class="kategoria-ikona">
-                <i class="bi @ikona"></i>
-            </div>
-            <div class="kategoria-nazwa">@k.Nazwa</div>
-            <div class="kategoria-ilosc">Zobacz oferty</div>
-        </a>
-            }
+        {
+            var ikona = ikonyKategorii.ContainsKey(k.Nazwa) ? ikonyKategorii[k.Nazwa] : "bi-book";
+ 
+            <a asp-controller="Ogloszenia" asp-action="Index" asp-route-kategoriaId="@k.Id" class="kategoria-kafelek">
+                <div class="kategoria-ikona">
+                    <i class="bi @ikona"></i>
+                </div>
+                <div class="kategoria-nazwa">@k.Nazwa</div>
+                <div class="kategoria-ilosc">Zobacz oferty</div>
+            </a>
         }
-    </div>
-
-    @* ---- Polecane og³oszenia ---- *@
-    <h2><i class="bi bi-stars"></i> Polecane dla Ciebie</h2>
-
-    @if (Model.Count == 0)
+    }
+</div>
+ 
+<h2><i class="bi bi-stars"></i> Polecane dla Ciebie</h2>
+ 
+@if (Model.Count == 0)
 {
     <div class="info-pasek">
         <i class="bi bi-info-circle"></i>
@@ -81,29 +77,29 @@ else
             var ikona = ikonyKategorii.ContainsKey(o.Kategoria?.Nazwa ?? "")
                 ? ikonyKategorii[o.Kategoria!.Nazwa]
                 : "bi-book";
-
-        <div class="karta">
-            @if (!string.IsNullOrEmpty(o.ZdjeciePath))
+ 
+            <div class="karta">
+                @if (!string.IsNullOrEmpty(o.ZdjeciePath))
                 {
-            <img src="@o.ZdjeciePath" alt="@o.Tytul" class="karta-zdjecie" />
+                    <img src="@o.ZdjeciePath" alt="@o.Tytul" class="karta-zdjecie" />
                 }
                 else
                 {
-            <div class="karta-zdjecie-placeholder">
-                <i class="bi @ikona"></i>
-            </div>
+                    <div class="karta-zdjecie-placeholder">
+                        <i class="bi @ikona"></i>
+                    </div>
                 }
-            <div class="karta-tresc">
-                <span class="karta-kategoria-tag">@o.Kategoria?.Nazwa</span>
-                <h3>
-                    <a asp-controller="Ogloszenia" asp-action="Szczegoly" asp-route-id="@o.Id">@o.Tytul</a>
-                </h3>
-                <div class="karta-info"><i class="bi bi-geo-alt"></i> @o.Miasto</div>
-                <div class="karta-info"><i class="bi bi-laptop"></i> @o.Forma</div>
-                <div class="karta-info"><i class="bi bi-person"></i> @o.Uzytkownik?.Nazwa</div>
-                <div class="karta-cena">@o.Cena z³ / godz.</div>
+                <div class="karta-tresc">
+                    <span class="karta-kategoria-tag">@o.Kategoria?.Nazwa</span>
+                    <h3>
+                        <a asp-controller="Ogloszenia" asp-action="Szczegoly" asp-route-id="@o.Id">@o.Tytul</a>
+                    </h3>
+                    <div class="karta-info"><i class="bi bi-geo-alt"></i> @o.Miasto</div>
+                    <div class="karta-info"><i class="bi bi-laptop"></i> @o.Forma</div>
+                    <div class="karta-info"><i class="bi bi-person"></i> @o.Uzytkownik?.Nazwa</div>
+                    <div class="karta-cena">@o.Cena z³ / godz.</div>
+                </div>
             </div>
-        </div>
         }
     </div>
 }
