@@ -48,18 +48,23 @@
                         <li><a asp-controller="Konto" asp-action="Panel"><i class="bi bi-speedometer2"></i> Panel</a></li>
                         }
 
-                       
 
-                    @* --- WIADOMOŚCI z licznikiem --- *@
-                    <li>
-                        <a asp-controller="Wiadomosci" asp-action="Index">
-                            <i class="bi bi-chat-dots"></i> Wiadomości
-                            @if (nieprzeczytaneWiadomosci > 0)
-                            {
-                                <span class="nav-licznik">@nieprzeczytaneWiadomosci</span>
-                            }
-                        </a>
-                    </li>
+
+                        @* --- WIADOMOŚCI z licznikiem --- *@
+                        @if (!User.IsInRole("Admin"))
+                        {
+                         <li>
+                            <a asp-controller="Wiadomosci" asp-action="Index">
+                                <i class="bi bi-chat-dots"></i> Wiadomości
+                                @if (nieprzeczytaneWiadomosci > 0)
+                                {
+                                    <span class="nav-licznik">@nieprzeczytaneWiadomosci</span>
+                                }
+                            </a>
+                            </li>
+                            
+                        }
+                        
 
                     @* --- DROPDOWN UŻYTKOWNIKA --- *@
                     <li class="user-dropdown">
