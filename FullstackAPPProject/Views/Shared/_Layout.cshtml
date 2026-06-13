@@ -42,13 +42,8 @@
                         <li><a asp-controller="Ogloszenia" asp-action="Dodaj"><i class="bi bi-plus-circle"></i> Dodaj</a></li>
                     }
 
-                        @* --- PANEL: dla każdej roli --- *@
-                        @if (!User.IsInRole("Uczen"))
-                        {
-                        <li><a asp-controller="Konto" asp-action="Panel"><i class="bi bi-speedometer2"></i> Panel</a></li>
-                        }
-
-                      
+                    @* --- PANEL: dla każdej roli --- *@
+                    <li><a asp-controller="Konto" asp-action="Panel"><i class="bi bi-speedometer2"></i> Panel</a></li>
 
                     @* --- WIADOMOŚCI z licznikiem --- *@
                     <li>
